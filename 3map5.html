@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#060a12"/>
+  <meta name="description" content="입체도형의 겉넓이와 부피를 이용해 아기 AI 로봇의 액체 전기 컵을 맞추고 챕터 3을 탈출하는 직무수학 게임"/>
+  <title>WH의 수학 탈출기 · 액체 전기의 원뿔 컵</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map35.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame solid-frame">
+    <canvas id="map35-canvas" aria-label="아기 AI 로봇과 액체 전기 충전 장치가 있는 마지막 입체 격실"></canvas>
+
+    <header id="map35-hud" class="hud is-hidden">
+      <div class="chapter-chip solid-chip"><span>CHAPTER 03 · MAP 05</span><strong>아기 AI 로봇의 식사 시간</strong></div>
+      <div class="objective-card"><span class="objective-label">탈출 조건</span><strong id="map35-objective">입체도형의 겉넓이와 부피를 계산해 로봇을 만족시키기</strong></div>
+      <div class="solid-count-chip"><span>검증 진행</span><b id="solid-count">0 / 3</b></div>
+    </header>
+
+    <section id="map35-start" class="screen-overlay solid-start" aria-labelledby="map35-title">
+      <div class="start-card solid-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">CONTAINMENT A-05 · BABY AI CHAMBER</p>
+          <h1 id="map35-title"><span>WH</span>와 액체 전기의 원뿔 컵</h1>
+          <p class="map-title">챕터 3 마지막 격실</p>
+          <p class="start-description">문이 열리려는 순간, 이 공간을 관리하던 아기 AI 로봇 <b>B-07</b>이 삐약거리는 기계음과 함께 나타난다. 로봇은 액체로 된 전기를 원뿔 모양 컵에 <b>가득</b> 담아 마셔야 기분이 좋아진다. 컵이 조금이라도 비면 WH를 계속 붙잡아 둘 모양이다.</p>
+          <div class="solid-rules">
+            <span><b>겉넓이</b> 전개도에 나타나는 평면도형의 넓이를 모두 더해 보호막을 만든다.</span>
+            <span><b>기둥의 부피</b> 밑면의 넓이와 높이를 곱해 액체 전기의 양을 확인한다.</span>
+            <span><b>뿔의 부피</b> 밑면의 넓이와 높이를 곱한 뒤 1/3을 곱해 컵의 높이를 정한다.</span>
+          </div>
+          <div class="start-actions">
+            <button id="map35-start-button" class="primary-button" type="button">로봇 식사 준비</button>
+            <a class="secondary-button back-link" href="./3map4.html">이전 격실</a>
+          </div>
+        </div>
+        <div class="solid-hero" aria-hidden="true">
+          <div class="robot-core">
+            <span class="robot-eye left"></span>
+            <span class="robot-eye right"></span>
+            <span class="robot-mouth"></span>
+            <i>07</i>
+          </div>
+          <div class="electric-cups">
+            <div class="cylinder-cup"><span></span></div>
+            <div class="transfer-arrow">→</div>
+            <div class="cone-cup"><span></span></div>
+          </div>
+          <p class="hero-caption">B-07은 숫자 7을 가장 좋아한다. 그래서 원뿔 컵의 밑면 반지름은 반드시 7 cm여야 한다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="map35-puzzle" class="modal-layer is-hidden" aria-label="입체도형의 겉넓이와 부피 계산 문제">
+      <div class="modal-card solid-card">
+        <header class="solid-header">
+          <div>
+            <p class="eyebrow">SOLID MEASURE · <span id="solid-difficulty">기초</span></p>
+            <h2><span id="solid-number">1</span>번 검증</h2>
+          </div>
+          <div id="solid-slots" class="solid-slots" aria-label="완성한 입체 검증"><i></i><i></i><i></i></div>
+        </header>
+
+        <div class="solid-workspace">
+          <article class="solid-visual-panel">
+            <div class="panel-heading"><span id="solid-title">입체도형 검증</span><strong>단위 확인</strong></div>
+            <div id="solid-visual" class="solid-visual" aria-label="입체도형과 전개도 그림"></div>
+            <p id="solid-note" class="solid-note">상황에 필요한 겉넓이 또는 부피를 계산하세요.</p>
+          </article>
+
+          <form id="solid-form" class="solid-form" novalidate>
+            <div class="answer-copy">
+              <span>B-07 FEEDING LOG · 주관식</span>
+              <strong>보기 없이 필요한 값을 직접 입력하세요.</strong>
+              <small id="solid-help">π가 붙는 값은 π 앞의 수만 입력합니다.</small>
+            </div>
+            <div id="solid-fields" class="solid-fields" aria-label="계산값 입력"></div>
+            <button id="solid-submit" class="primary-button" type="submit">계산값 전송</button>
+            <p id="map35-feedback" class="solid-feedback" role="status">겉넓이와 부피 공식을 구분해서 계산해 보세요.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="map35-complete" class="screen-overlay complete-screen solid-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>05</span><b>CHAPTER 03 COMPLETE</b></div>
+        <p class="eyebrow">B-07 SATISFIED</p>
+        <h2>원뿔 컵이 정확히 가득 찼다!</h2>
+        <p>B-07은 액체 전기를 한 모금에 마시고 눈을 반짝였다. WH는 입체도형의 겉넓이와 부피가 실제 물건의 보호막, 용량, 설계 높이를 정하는 데 쓰인다는 것을 확인하고 마지막 격실을 빠져나간다.</p>
+        <div class="learning-summary solid-summary">
+          <span>검증 결과</span>
+          <strong>직육면체 겉넓이·부피, 원기둥 부피, 원뿔 부피의 1/3 관계 계산 성공</strong>
+        </div>
+        <div class="complete-actions">
+          <button id="map35-replay" class="secondary-button" type="button">다시 도전</button>
+          <button id="map35-next" class="primary-button" type="button">챕터 4로 이동</button>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map35.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

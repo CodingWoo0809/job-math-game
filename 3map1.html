@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#09111a"/>
+  <meta name="description" content="전개도에 해당하는 입체도형의 겨냥도를 다섯 개 보기에서 찾아 5문제를 연속으로 해결하는 직무수학 게임"/>
+  <title>WH의 수학 등굣길 — 접히는 방의 첫 번째 문</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map31.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame cell-frame">
+    <canvas id="map31-canvas" aria-label="WH가 입체도형 모양의 금속 격실에 갇혀 있는 2D 장면"></canvas>
+    <header id="map31-hud" class="hud is-hidden"><div class="chapter-chip cell-chip"><span>CHAPTER 03 · MAP 01</span><strong>다면체 격실 A-01</strong></div><div class="objective-card"><span class="objective-label">탈출 조건</span><strong id="map31-objective">전개도와 일치하는 겨냥도를 5번 연속 선택하자.</strong></div><div class="streak-chip"><span>연속 인증</span><b id="streak-count">0 / 5</b></div></header>
+
+    <section id="map31-start" class="screen-overlay cell-start" aria-labelledby="map31-title"><div class="start-card cell-start-card"><div class="start-copy"><p class="eyebrow">CONTAINMENT A-01 · ESCAPE PROTOCOL</p><h1 id="map31-title"><span>WH의</span> 첫 번째 격실</h1><p class="map-title">접히는 방의 첫 번째 문</p><p class="start-description">벽면 스캐너가 서로 연결된 전개도 하나와 교과서식 겨냥도 다섯 개를 투사한다. 쉬운 문제 2개, 생각 문제 2개, 고난도 문제 1개를 연속으로 맞혀야 문이 열린다. 한 번이라도 틀리면 새로운 1번 문제부터 다시 시작된다.</p><div class="rule-row"><span><b>2</b> 쉬운 문제</span><span><b>2</b> 생각 문제</span><span><b>1</b> 고난도 문제</span></div><div class="start-actions"><button id="map31-start-button" class="primary-button" type="button">스캐너 작동</button><a class="secondary-button back-link" href="./chapter3.html">납치 장면 다시 보기</a></div></div><div class="cell-hero" aria-hidden="true"><div class="wire-cube"><i></i><i></i><i></i></div><div class="net-symbol"><b></b><b></b><b></b><b></b><b></b><b></b></div><div class="scan-beam"></div><div class="cell-caption"><span>ROOM LOCK</span><strong>CONSECUTIVE MATCH 0 / 5</strong></div></div></div></section>
+
+    <section id="map31-puzzle" class="modal-layer is-hidden" aria-label="전개도 겨냥도 문제"><div class="modal-card puzzle-card"><header class="puzzle-header"><div><p class="eyebrow">NET SCANNER · TIERED RANDOM BANK 50</p><h2><span id="question-number">1</span>번 인증 문제</h2></div><div id="streak-slots" class="streak-slots" aria-label="연속 정답 진행도"><i></i><i></i><i></i><i></i><i></i></div></header><div class="puzzle-layout"><section class="net-screen"><div class="screen-label"><span>INPUT · 연결된 전개도</span><small>모든 면은 변을 공유해 이어져 있습니다.</small></div><svg id="net-svg" viewBox="0 0 420 300" role="img" aria-label="문제의 입체도형 전개도"></svg><div class="fold-guide">면의 모양과 개수, 서로 맞닿는 변을 따라 머릿속으로 접어 보세요.</div></section><section class="choice-screen"><div class="screen-label"><span>OUTPUT · 겨냥도</span><small>실선은 보이는 모서리, 점선은 보이지 않는 모서리입니다.</small></div><div id="solid-options" class="solid-options"></div><p id="map31-feedback" class="scanner-feedback" role="status">선택지의 모서리 연결과 숨은 모서리를 전개도와 비교해.</p></section></div><footer class="puzzle-footer"><span>쉬움 2 → 생각 2 → 고난도 1 · 사용한 문항은 한 바퀴 뒤 다시 섞임</span><b id="bank-left">50문항 덱 준비됨</b></footer></div></section>
+
+    <section id="map31-complete" class="screen-overlay complete-screen cell-complete is-hidden"><div class="complete-card"><div class="completion-badge"><span>01</span><b>ROOM UNLOCKED</b></div><p class="eyebrow">FIVE CONSECUTIVE MATCHES</p><h2>격실의 첫 번째 문이 열렸어!</h2><p>전개도의 면을 머릿속으로 접고 겨냥도와 비교하면 평면 정보로 입체도형의 전체 모양을 판단할 수 있어.</p><div class="learning-summary cell-summary"><span>인증 결과</span><strong>전개도 ↔ 겨냥도 연속 판별 5회 성공</strong></div><div class="complete-actions"><button id="map31-replay" class="secondary-button">다시 도전</button><button id="map31-next" class="primary-button">3map2 격실로 이동</button></div></div></section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map31.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

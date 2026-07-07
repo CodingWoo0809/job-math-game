@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#9be8ff"/>
+  <meta name="description" content="WH가 학교 앞 정문과 후문 통행량 자료를 직접 조사하고 목적에 맞게 표와 그래프로 정리하는 직무수학 게임"/>
+  <title>WH의 수학 탈출기 · 등교길 자료 정리 작전</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map43.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame data-frame">
+    <canvas id="map43-canvas" aria-label="학교 정문 앞에서 WH가 등교 시간 통행량 자료를 조사하는 장면"></canvas>
+
+    <header id="map43-hud" class="hud is-hidden">
+      <div class="chapter-chip data-chip"><span>CHAPTER 04 · MAP 03</span><strong>등교길 자료 정리 작전</strong></div>
+      <div class="objective-card"><span class="objective-label">현재 목표</span><strong id="map43-objective">생활안전부 선생님에게 자료 정리 목적을 물어보자.</strong></div>
+      <div class="data-count-chip"><span>수집 정보</span><b id="data-count">0 / 5</b></div>
+    </header>
+
+    <section id="map43-start" class="screen-overlay data-start" aria-labelledby="map43-title">
+      <div class="start-card data-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">SCHOOL GATE · DATA ORGANIZATION</p>
+          <h1 id="map43-title"><span>WH</span>와 등교길 자료 정리</h1>
+          <p class="map-title">자료와 가능성의 세 번째 학교 앞길</p>
+          <p class="start-description">학교가 눈앞에 보이는데 정문과 후문 사이가 어수선하다. 생활안전부 선생님은 등교 시간대별 통행량 자료를 정리해 안전도우미를 어디에 배치할지 정해야 한다. WH는 흩어진 기록을 직접 모아 표와 그래프로 정리하려 한다.</p>
+          <div class="data-rules">
+            <span><b>이동</b> 키보드 화살표 방향키로 WH를 움직인다.</span>
+            <span><b>조사</b> 기록판, 안내 메모, 사람 가까이에서 `Space Bar`를 누른다.</span>
+            <span><b>인벤토리</b> `I` 키로 WH의 직무수학 교과서와 수집한 자료를 확인한다.</span>
+          </div>
+          <div class="start-actions">
+            <button id="map43-start-button" class="primary-button" type="button">학교 앞 자료 조사 시작</button>
+            <a class="secondary-button back-link" href="./4map2.html">4map2 다시 보기</a>
+          </div>
+        </div>
+        <div class="data-hero" aria-hidden="true">
+          <div class="gate-sign">SCHOOL</div>
+          <div class="report-board">
+            <i></i><i></i><i></i>
+            <p>도수분포표, 상대도수분포표, 꺾은선그래프를 목적에 맞게 써야 한다.</p>
+          </div>
+          <p class="hero-caption">자료는 이미 있지만 정리되어 있지 않다. WH가 목적을 듣고, 기록을 모으고, 알맞은 표현으로 바꿔야 한다.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside id="map43-control-guide" class="control-guide is-hidden" aria-label="조작 안내">
+      <span><b>↑ ↓ ← →</b> 이동</span>
+      <span><b>Space</b> 조사</span>
+      <span><b>I</b> 인벤토리</span>
+    </aside>
+
+    <div id="map43-interaction-prompt" class="interaction-prompt is-hidden" aria-live="polite">
+      <b id="map43-interaction-target">대상</b>
+      <span id="map43-interaction-text">Space Bar로 조사</span>
+    </div>
+
+    <section id="map43-dialogue" class="dialogue-box is-hidden" aria-live="polite" aria-labelledby="map43-dialogue-speaker">
+      <div>
+        <span id="map43-dialogue-speaker">대화</span>
+        <p id="map43-dialogue-text">대화 내용</p>
+      </div>
+      <button id="map43-dialogue-close" type="button" aria-label="대화 닫기">닫기</button>
+    </section>
+
+    <section id="map43-inventory" class="inventory-panel is-hidden" aria-labelledby="map43-inventory-title">
+      <div class="inventory-card">
+        <header>
+          <div>
+            <p class="eyebrow">WH INVENTORY · I</p>
+            <h2 id="map43-inventory-title">교과서와 수집 자료</h2>
+          </div>
+          <button id="map43-inventory-close" type="button" aria-label="인벤토리 닫기">닫기</button>
+        </header>
+        <div class="inventory-grid">
+          <article>
+            <h3>직무수학 교과서</h3>
+            <div id="map43-textbook-list" class="inventory-list"></div>
+          </article>
+          <article>
+            <h3>이번 맵에서 모은 자료</h3>
+            <div id="map43-notes-list" class="inventory-list"></div>
+          </article>
+        </div>
+        <p id="map43-inventory-hint" class="inventory-hint">교과서는 표와 그래프의 쓰임을 알려 주지만, 통행량 자료와 정리 목적은 현장에서 직접 확인해야 한다.</p>
+      </div>
+    </section>
+
+    <section id="map43-puzzle" class="modal-layer is-hidden" aria-label="수집한 등교길 자료를 표와 그래프로 정리하는 문제">
+      <div class="modal-card data-card">
+        <header class="data-header">
+          <div>
+            <p class="eyebrow">TRAFFIC REPORT · <span id="data-rule">표와 그래프 정리</span></p>
+            <h2>안전도우미 배치 보고서 완성하기</h2>
+          </div>
+          <button id="data-close" type="button" aria-label="정리창 닫기">닫기</button>
+        </header>
+
+        <div class="data-workspace">
+          <article class="data-visual-panel">
+            <div class="panel-heading"><span>정문·후문 등교 통행량</span><strong>수집 자료 기반</strong></div>
+            <div id="data-summary" class="collected-summary">수집한 자료 요약</div>
+            <div id="data-visual" class="data-visual" aria-label="정문과 후문 통행량 도수분포표, 상대도수분포표, 꺾은선그래프"></div>
+            <p class="data-note">정확한 인원수는 도수분포표로, 비율 비교는 상대도수분포표로, 시간대별 변화 비교는 꺾은선그래프로 정리한다.</p>
+          </article>
+
+          <form id="data-form" class="data-form" novalidate>
+            <div class="answer-copy">
+              <span>DATA LOG · 마지막 정리</span>
+              <strong>수집한 자료를 목적에 맞는 표와 그래프로 연결해 보고서를 완성하세요.</strong>
+              <small id="data-help">막히면 `I` 키로 교과서와 수집 자료를 다시 확인할 수 있습니다.</small>
+            </div>
+            <div class="answer-row">
+              <aside id="data-example" class="data-example">
+                <b>생각해 볼 예시</b>
+                <p>두 시간대의 정확한 인원수를 비교하려면 도수분포표가 좋고, 전체에서 차지하는 비율을 비교하려면 상대도수분포표가 좋아. 시간에 따라 오르내리는 변화를 비교할 때는 꺾은선그래프가 잘 보인다.</p>
+              </aside>
+              <div class="answer-column">
+                <div id="data-fields" class="data-fields" aria-label="자료 정리 보고서 입력">
+                  <label class="data-field">
+                    <span>정확한 인원수를 정리할 표</span>
+                    <span class="text-with-unit"><input name="exactTable" type="text" autocomplete="off" required placeholder="예: 도수분포표"/></span>
+                  </label>
+                  <label class="data-field">
+                    <span>전체에서 차지하는 비율을 정리할 표</span>
+                    <span class="text-with-unit"><input name="relativeTable" type="text" autocomplete="off" required placeholder="예: 상대도수분포표"/></span>
+                  </label>
+                  <label class="data-field">
+                    <span>정문과 후문의 시간대별 변화를 비교할 그래프</span>
+                    <span class="text-with-unit"><input name="graphType" type="text" autocomplete="off" required placeholder="예: 꺾은선그래프"/></span>
+                  </label>
+                  <label class="data-field">
+                    <span>정문 도수가 가장 큰 시간대 번호</span>
+                    <span class="text-with-unit"><input name="mainPeak" type="text" autocomplete="off" required placeholder="예: 4"/></span>
+                  </label>
+                  <label class="data-field">
+                    <span>후문 도수가 가장 큰 시간대 번호</span>
+                    <span class="text-with-unit"><input name="backPeak" type="text" autocomplete="off" required placeholder="예: 5"/></span>
+                  </label>
+                  <label class="data-field">
+                    <span>추가 안전도우미를 보낼 장소</span>
+                    <span class="text-with-unit"><input name="helperGate" type="text" autocomplete="off" required placeholder="예: 후문"/></span>
+                  </label>
+                </div>
+                <button id="data-submit" class="primary-button" type="submit">배치 보고서 제출</button>
+                <p id="map43-feedback" class="data-feedback" role="status">먼저 모은 자료가 충분한지 확인해 보세요.</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="map43-resolution" class="screen-overlay resolution-screen is-hidden" aria-labelledby="map43-resolution-title">
+      <div class="resolution-card">
+        <p class="eyebrow">SAFETY STAFF SIMULATION</p>
+        <h2 id="map43-resolution-title">안전도우미 배치가 정리되고 있어!</h2>
+        <p id="map43-resolution-text">해결 설명이 여기에 표시됩니다.</p>
+        <button id="map43-resolution-continue" class="primary-button" type="button">계속하기</button>
+      </div>
+    </section>
+
+    <section id="map43-complete" class="screen-overlay complete-screen data-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>03</span><b>DATA REPORT CLEAR</b></div>
+        <p class="eyebrow">SCHOOL SAFETY TEAM THANKS WH</p>
+        <h2>흩어진 통행량 자료가 배치표로 바뀌었다!</h2>
+        <p>WH가 정문과 후문 자료를 도수분포표, 상대도수분포표, 꺾은선그래프로 정리하자 어느 시간대에 어느 문이 붐비는지 한눈에 보였다. 선생님은 후문 쪽에 추가 안전도우미를 배치하고, WH는 자료 정리가 실제 결정을 돕는다는 걸 느끼며 학교 안으로 더 가까이 걸어간다.</p>
+        <div class="learning-summary data-summary-card">
+          <span>해결 결과</span>
+          <strong>직무 목적에 맞게 자료를 표와 그래프로 정리해 등교 안전 배치 결정을 도왔다.</strong>
+        </div>
+        <div class="complete-actions">
+          <button id="map43-replay" class="secondary-button" type="button">다시 도전</button>
+          <button id="map43-next" class="primary-button" type="button">챕터 4 입구로 이동</button>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map43.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

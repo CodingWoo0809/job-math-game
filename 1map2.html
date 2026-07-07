@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#3d2747" />
+    <meta
+      name="description"
+      content="WH가 반올림, 올림과 버림으로 아침 시장의 재무 정산을 해결하는 직무수학 어드벤처"
+    />
+    <title>WH의 수학 등굣길 — 아침 시장의 세 가지 정산</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./map2.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-frame market-frame" aria-label="직무수학 어드벤처 두 번째 맵">
+        <canvas
+          id="map2-canvas"
+          tabindex="0"
+          aria-label="WH가 아침 시장을 탐색하는 2D 게임 화면입니다. A와 D 또는 방향키로 이동하고 E 또는 Enter로 상호작용합니다."
+        ></canvas>
+
+        <header id="map2-hud" class="hud is-hidden" aria-label="게임 진행 정보">
+          <div class="chapter-chip market-chip">
+            <span>CHAPTER 01 · MAP 02</span>
+            <strong>아침 시장 정산</strong>
+          </div>
+          <div class="objective-card" aria-live="polite">
+            <span class="objective-label">지금 할 일</span>
+            <strong id="map2-objective">시장 재무 담당자에게 상황을 물어보자.</strong>
+          </div>
+          <nav class="hud-actions" aria-label="게임 메뉴">
+            <button id="map2-notebook-button" class="icon-button" type="button" aria-label="정산 수첩 열기">
+              <span aria-hidden="true">▤</span>
+              <span id="map2-notebook-count" class="button-count">0</span>
+            </button>
+          </nav>
+        </header>
+
+        <div id="map2-interaction-prompt" class="interaction-prompt is-hidden" aria-live="polite">
+          <span class="key-cap">E</span>
+          <span id="map2-interaction-text">살펴보기</span>
+        </div>
+        <div id="map2-toast" class="toast is-hidden" role="status" aria-live="polite"></div>
+
+        <section id="map2-start-screen" class="screen-overlay market-start" aria-labelledby="map2-title">
+          <div class="start-card market-start-card">
+            <div class="start-copy">
+              <p class="eyebrow">직무수학 어드벤처 · MAP 02</p>
+              <h1 id="map2-title"><span>WH의</span> 수학 등굣길</h1>
+              <p class="map-title">아침 시장의 세 가지 정산</p>
+              <p class="start-description">
+                시장 보행문을 열려면 세 개의 재무 문서를 정리해야 한다. 큰 수를 업무 목적에 맞게
+                반올림하고, 올림하고, 버려 정산 도장을 완성하자.
+              </p>
+              <div class="start-actions">
+                <button id="map2-start-button" class="primary-button" type="button">시장으로 들어가기 <span aria-hidden="true">→</span></button>
+                <a class="secondary-button back-link" href="./index.html">이전 맵</a>
+              </div>
+            </div>
+            <div class="market-hero" aria-hidden="true">
+              <div class="market-sun"></div>
+              <div class="awning awning-one"></div>
+              <div class="awning awning-two"></div>
+              <div class="awning awning-three"></div>
+              <div class="stamp-stack">
+                <span>반올림</span>
+                <span>올림</span>
+                <span>버림</span>
+              </div>
+              <div class="market-gate-mini"><i></i><i></i><i></i><i></i></div>
+              <div class="market-caption"><span>오늘의 직무</span><strong>큰 금액을 목적에 맞게 어림하기</strong></div>
+            </div>
+          </div>
+          <div class="control-strip">
+            <span><kbd>A</kbd><kbd>D</kbd> 이동</span>
+            <span><kbd>E</kbd> 살펴보기</span>
+            <span><kbd>Esc</kbd> 닫기</span>
+          </div>
+        </section>
+
+        <section id="map2-dialogue" class="dialogue-panel is-hidden" aria-live="polite">
+          <div id="map2-speaker-avatar" class="speaker-avatar" aria-hidden="true">WH</div>
+          <div class="dialogue-copy">
+            <span id="map2-speaker-name" class="speaker-name">WH</span>
+            <p id="map2-dialogue-text"></p>
+          </div>
+          <button id="map2-dialogue-next" class="dialogue-next" type="button">계속 <span aria-hidden="true">›</span></button>
+        </section>
+
+        <section id="map2-notebook" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="map2-notebook-title">
+          <div class="modal-card notebook-card market-notebook">
+            <header class="modal-header">
+              <div>
+                <p class="eyebrow">MARKET RECORDS</p>
+                <h2 id="map2-notebook-title">정산 수첩</h2>
+              </div>
+              <button id="map2-notebook-close" class="close-button" type="button" aria-label="정산 수첩 닫기">×</button>
+            </header>
+            <p class="notebook-intro">시장 곳곳에서 확인한 금액과 업무 규칙이 기록돼.</p>
+            <div id="map2-notebook-entries" class="notebook-entries"></div>
+          </div>
+        </section>
+
+        <section id="settlement-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="settlement-title">
+          <div class="modal-card settlement-card">
+            <header class="modal-header">
+              <div>
+                <p class="eyebrow">MORNING SETTLEMENT</p>
+                <h2 id="settlement-title">아침 시장 정산 단말기</h2>
+              </div>
+              <button id="settlement-close" class="close-button" type="button" aria-label="정산 단말기 닫기">×</button>
+            </header>
+
+            <div id="settlement-content">
+              <div class="settlement-intro">
+                <div>
+                  <span>업무 원칙</span>
+                  <strong>같은 큰 수라도 목적에 따라 어림 방법이 달라져.</strong>
+                </div>
+                <div id="stamp-progress" class="stamp-progress" aria-label="정산 도장 진행 상황"></div>
+              </div>
+              <div id="estimate-task-list" class="estimate-task-list"></div>
+              <footer class="hint-bar market-hint-bar">
+                <button id="map2-hint-button" class="hint-button" type="button"><span aria-hidden="true">✦</span> 현재 문제 힌트</button>
+                <p id="map2-hint-text" class="hint-text" aria-live="polite">가장 위의 미완료 문제부터 힌트를 보여 줘.</p>
+              </footer>
+            </div>
+
+            <div id="settlement-success" class="settlement-success is-hidden">
+              <div class="three-stamps" aria-hidden="true"><span>반올림</span><span>올림</span><span>버림</span></div>
+              <p class="eyebrow">SETTLEMENT COMPLETE</p>
+              <h3>세 가지 정산 완료!</h3>
+              <p>보고, 예산과 입금의 목적에 맞게 큰 금액을 어림했어.</p>
+              <button id="open-market-gate" class="primary-button" type="button">정산 확정하고 시장문 열기</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="map2-complete" class="screen-overlay complete-screen market-complete is-hidden" aria-labelledby="map2-complete-title">
+          <div class="complete-card">
+            <div class="completion-badge"><span>02</span><b>MAP CLEAR</b></div>
+            <p class="eyebrow">CHAPTER 01 · 수와 연산</p>
+            <h2 id="map2-complete-title">시장의 아침을 열었어!</h2>
+            <p>어림은 숫자를 대충 다루는 것이 아니라, 업무 목적에 알맞은 크기로 나타내는 방법이야.</p>
+            <div class="learning-summary market-summary">
+              <span>오늘 사용한 수학</span>
+              <strong>가까운 값은 반올림 · 부족하지 않게 올림 · 완성된 단위만 버림</strong>
+            </div>
+            <div class="complete-actions">
+              <button id="map2-replay" class="secondary-button" type="button">다시 플레이</button>
+              <button id="map2-next" class="primary-button" type="button">1map3로 이동</button>
+            </div>
+          </div>
+        </section>
+
+        <nav id="map2-touch-controls" class="touch-controls is-hidden" aria-label="화면 조작">
+          <div>
+            <button id="map2-touch-left" type="button" aria-label="왼쪽으로 이동">←</button>
+            <button id="map2-touch-right" type="button" aria-label="오른쪽으로 이동">→</button>
+          </div>
+          <button id="map2-touch-interact" class="touch-interact" type="button" aria-label="상호작용">E</button>
+        </nav>
+      </section>
+    </main>
+        <script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map2.js"></script>
+    <script type="module" src="./src/dev-tools.mjs"></script>
+  </body>
+</html>

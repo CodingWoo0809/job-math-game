@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#4d5a38" /><meta name="description" content="인상률, 할인율과 손익률로 산림 작업장의 사실관계를 확인하는 직무수학 어드벤처" />
+    <title>WH의 수학 등굣길 — 멈춰 선 숲 가꾸기 현장</title>
+    <link rel="stylesheet" href="./styles.css" /><link rel="stylesheet" href="./map22.css" />
+  </head>
+  <body>
+    <main class="app-shell"><section class="game-frame forestry-frame">
+      <canvas id="map22-canvas" tabindex="0" aria-label="WH가 숲 가꾸기 작업장을 탐색하는 2D 게임입니다."></canvas>
+      <header id="map22-hud" class="hud is-hidden"><div class="chapter-chip forestry-chip"><span>CHAPTER 02 · MAP 02</span><strong>숲 가꾸기 현장</strong></div><div class="objective-card"><span class="objective-label">지금 할 일</span><strong id="map22-objective">현장 조정 담당자에게 상황을 물어보자.</strong></div><div class="evidence-count"><b id="evidence-count">0</b><span>/ 3 근거</span></div></header>
+      <div id="map22-prompt" class="interaction-prompt is-hidden"><span class="key-cap">E</span><span id="map22-prompt-text">확인하기</span></div><div id="map22-toast" class="toast is-hidden" role="status"></div>
+
+      <section id="map22-start" class="screen-overlay forestry-start" aria-labelledby="map22-title"><div class="start-card forestry-start-card"><div class="start-copy"><p class="eyebrow">직무수학 어드벤처 · MAP 02</p><h1 id="map22-title"><span>WH의</span> 수학 등굣길</h1><p class="map-title">멈춰 선 숲 가꾸기 현장</p><p class="start-description">숲의 건강을 위한 간벌 작업이 임금 인상률 논쟁으로 멈췄다. 세 재무 문서의 기준을 확인해 모두가 같은 숫자를 보고 다시 대화하도록 돕자.</p><div class="start-actions"><button id="map22-start-button" class="primary-button" type="button">작업장 들어가기 <span>→</span></button><a class="secondary-button back-link" href="./2map1.html">이전 맵</a></div></div><div class="forestry-hero" aria-hidden="true"><div class="helmet">%</div><div class="log-stack"><i></i><i></i><i></i></div><div class="dispute-cards"><span>인상률 ?</span><span>할인율 ?</span><span>손익률 ?</span></div><div class="forestry-caption"><span>핵심 질문</span><strong>무엇을 기준으로 몇 %인지 확인하기</strong></div></div></div></section>
+
+      <section id="map22-dialogue" class="dialogue-panel is-hidden"><div id="map22-avatar" class="speaker-avatar">WH</div><div class="dialogue-copy"><span id="map22-speaker" class="speaker-name">WH</span><p id="map22-dialogue-text"></p></div><button id="map22-dialogue-next" class="dialogue-next" type="button">계속 <span>›</span></button></section>
+
+      <section id="document-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="document-title"><div class="modal-card document-card"><header class="modal-header"><div><p id="document-kicker" class="eyebrow">FINANCIAL RECORD</p><h2 id="document-title">문서 제목</h2></div><button id="document-close" class="close-button" type="button">×</button></header><div class="document-layout"><div class="paper-sheet"><span id="document-stamp">검토 전</span><h3 id="document-facts-title"></h3><div id="document-facts" class="document-facts"></div><p id="document-rule" class="document-rule"></p></div><form id="document-form" class="document-form" novalidate><p id="document-question"></p><div id="document-inputs" class="document-inputs"></div><p id="document-feedback" class="form-feedback"></p><div class="document-actions"><button id="document-hint" class="secondary-button" type="button">힌트</button><button class="primary-button" type="submit">계산 확인</button></div></form></div></div></section>
+
+      <section id="resolution-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="resolution-title"><div class="modal-card resolution-card"><div class="evidence-row"><span>실제 인상률 <b>8%</b></span><span>안전장비 할인율 <b>15%</b></span><span>원가 기준 손익률 <b>20%</b></span></div><p class="eyebrow">FACT CHECK COMPLETE</p><h2 id="resolution-title">같은 자료로 다시 대화하기</h2><p>계산은 사실관계를 명확히 하지만 적정 임금을 대신 결정하지 않아. 상사와 작업자가 확인된 8%와 약속한 10%를 기준으로 새 제안서를 함께 검토한다.</p><div class="new-contract"><span>수정 제안 월급</span><strong>2,750,000원</strong><small>기존 월급 2,500,000원의 10% 인상</small></div><button id="resolve-dispute" class="primary-button" type="button">근거 제시하고 협상 재개</button><button id="resolution-close" class="secondary-button" type="button">문서 다시 보기</button></div></section>
+
+      <section id="map22-complete" class="screen-overlay complete-screen forestry-complete is-hidden"><div class="complete-card"><div class="completion-badge"><span>02</span><b>MAP CLEAR</b></div><p class="eyebrow">CHAPTER 02 · 변화와 관계</p><h2>숲길과 대화가 다시 열렸어!</h2><p>백분율은 항상 무엇을 기준으로 한 비율인지 함께 확인해야 해.</p><div class="learning-summary forestry-summary"><span>확인한 비율</span><strong>인상률 8% · 할인율 15% · 손익률 20%</strong></div><div class="complete-actions"><button id="map22-replay" class="secondary-button">다시 플레이</button><button id="map22-next" class="primary-button">2map3로 이동</button></div></div></section>
+
+      <nav id="map22-touch" class="touch-controls is-hidden"><div><button id="map22-left">←</button><button id="map22-right">→</button></div><button id="map22-interact" class="touch-interact">E</button></nav>
+    </section></main>    </section></main><script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map22.js"></script>
+    <script type="module" src="./src/dev-tools.mjs"></script>
+  </body>
+</html>

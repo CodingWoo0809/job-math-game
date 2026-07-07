@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#29263a"/>
+  <meta name="description" content="현재 나이의 차와 3년 뒤 나이의 합을 연립방정식으로 나타내어 푸는 직무수학 게임"/>
+  <title>WH의 수학 등굣길 — 철교 아래 나이 암호</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map25.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame alley-frame">
+    <canvas id="map25-canvas" tabindex="0" aria-label="WH가 어두워지는 철교 아래 골목에서 형제의 나이 문제를 푸는 2D 게임입니다."></canvas>
+
+    <header id="map25-hud" class="hud is-hidden">
+      <div class="chapter-chip alley-chip"><span>CHAPTER 02 · MAP 05</span><strong>철교 아래 골목</strong></div>
+      <div class="objective-card"><span class="objective-label">지금 할 일</span><strong id="map25-objective">골목을 막고 있는 형제에게 다가가자.</strong></div>
+      <div class="equation-chip"><span>현재 나이 차</span><b>4살</b></div>
+    </header>
+
+    <div id="map25-prompt" class="interaction-prompt is-hidden"><span class="key-cap">E</span><span id="map25-prompt-text">대화하기</span></div>
+    <div id="map25-toast" class="toast is-hidden" role="status"></div>
+
+    <section id="map25-start" class="screen-overlay alley-start" aria-labelledby="map25-title">
+      <div class="start-card alley-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">직무수학 어드벤처 · CHAPTER 02 FINALE</p>
+          <h1 id="map25-title"><span>WH의</span> 수학 등굣길</h1>
+          <p class="map-title">철교 아래 나이 암호</p>
+          <p class="start-description">숲을 벗어나자 해가 지고, 낡은 철교 아래 골목이 나타났다. 길을 막고 돈을 요구하는 형제의 두 나이를 연립방정식으로 구하고 다음 지역으로 빠져나가자.</p>
+          <div class="start-actions"><button id="map25-start-button" class="primary-button" type="button">어두운 골목으로 <span>→</span></button><a class="secondary-button back-link" href="./2map4.html">이전 맵</a></div>
+        </div>
+        <div class="alley-hero" aria-hidden="true">
+          <div class="bridge-beams"><i></i><i></i><i></i></div>
+          <div class="brother-silhouette older"><span>?</span></div>
+          <div class="brother-silhouette younger"><span>?</span></div>
+          <div class="hero-clue"><b>현재 나이의 차</b><strong>4</strong></div>
+          <div class="hero-difference">3년 뒤 나이의 합 = ?</div>
+          <div class="alley-caption"><span>통과 조건</span><strong>두 형제의 현재 나이를 맞혀라</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="map25-dialogue" class="dialogue-panel is-hidden">
+      <div id="map25-avatar" class="speaker-avatar">WH</div>
+      <div class="dialogue-copy"><span id="map25-speaker" class="speaker-name">WH</span><p id="map25-dialogue-text"></p></div>
+      <button id="map25-dialogue-next" class="dialogue-next" type="button">계속 <span>›</span></button>
+    </section>
+
+    <section id="age-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="age-title">
+      <div class="modal-card age-card">
+        <header class="modal-header"><div><p class="eyebrow">ALLEY AGE CHALLENGE</p><h2 id="age-title">형제의 현재 나이를 밝혀라</h2></div><button id="age-close" class="close-button" type="button" aria-label="닫기">×</button></header>
+        <div class="age-progress"><span id="solve-step" class="is-active"><b>1</b> 연립방정식 세우고 풀기</span><i></i><span id="check-step"><b>2</b> 두 조건 검산</span></div>
+
+        <section id="solve-stage" class="age-stage">
+          <div class="age-layout">
+            <aside class="clue-board">
+              <p>형제가 말한 단서</p>
+              <dl><div><dt>현재 나이의 차</dt><dd>4살</dd></div><div><dt>몇 년 뒤?</dt><dd>3년 뒤</dd></div><div><dt>그때 나이의 합</dt><dd>40살</dd></div><div><dt>나이가 더 많은 사람</dt><dd>형</dd></div></dl>
+              <div class="variable-card"><span>두 미지수 정하기</span><strong>동생 x살 · 형 y살</strong><small>두 단서를 각각 일차방정식으로 나타내어 함께 푸세요.</small></div>
+            </aside>
+            <form id="answer-form" class="answer-form" novalidate>
+              <div class="system-instruction"><span>풀이 방법</span><h3>연립방정식을 직접 세워 해결하세요.</h3><p>보기는 없습니다. 종이나 머릿속으로 식을 세우고, 화면에는 구한 현재 나이만 입력하세요.</p></div>
+              <div class="age-inputs"><label>동생의 현재 나이<div class="money-input"><input name="younger" inputmode="numeric" autocomplete="off"/><span>살</span></div></label><label>형의 현재 나이<div class="money-input"><input name="older" inputmode="numeric" autocomplete="off"/><span>살</span></div></label></div>
+              <p id="answer-feedback" class="form-feedback" role="status"></p>
+              <div class="age-actions"><button id="answer-hint" class="secondary-button" type="button">힌트</button><button class="primary-button" type="submit">최종 답 확인</button></div>
+            </form>
+          </div>
+        </section>
+
+        <section id="age-success" class="age-success is-hidden">
+          <p class="eyebrow">ANSWER VERIFIED</p>
+          <div class="age-cards"><div><span>동생</span><strong>15살</strong></div><div><span>형</span><strong>19살</strong></div></div>
+          <div class="verification-row"><span>현재 차 <b>19-15=4</b></span><span>3년 뒤 합 <b>18+22=40</b></span></div>
+          <h3>두 단서가 모두 맞아!</h3>
+          <button id="drop-chain" class="primary-button" type="button">정답 말하고 길 열기</button>
+        </section>
+      </div>
+    </section>
+
+    <section id="map25-complete" class="screen-overlay complete-screen alley-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>02</span><b>CHAPTER CLEAR</b></div>
+        <p class="eyebrow">CHAPTER 02 · 변화와 관계 완료</p>
+        <h2>식으로 관계를 밝혀냈어!</h2>
+        <p>두 개의 알 수 없는 값을 문자로 두면 두 단서를 연립방정식으로 연결해 함께 해결할 수 있어. 철교 너머에는 도형과 측정의 새로운 지역이 기다리고 있어.</p>
+        <div class="learning-summary alley-summary"><span>해결한 연립방정식</span><strong>y-x=4, (x+3)+(y+3)=40 → x=15, y=19</strong></div>
+        <div class="complete-actions"><button id="map25-replay" class="secondary-button">다시 플레이</button><button id="map25-next" class="primary-button">CHAPTER 03 진입</button></div>
+      </div>
+    </section>
+
+    <nav id="map25-touch" class="touch-controls is-hidden"><div><button id="map25-left">←</button><button id="map25-right">→</button></div><button id="map25-interact" class="touch-interact">E</button></nav>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map25.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

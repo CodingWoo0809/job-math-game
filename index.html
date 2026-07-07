@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#16243f" />
+    <meta
+      name="description"
+      content="WH가 아침 빵집 납품 비용을 계산하고 막힌 등굣길을 여는 직무수학 어드벤처 게임"
+    />
+    <title>WH의 수학 등굣길 - 막힌 골목의 계산서</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="maple-cute-map1">
+    <main id="app" class="app-shell">
+      <section class="game-frame" aria-label="직무수학 어드벤처 게임">
+        <canvas
+          id="game-canvas"
+          tabindex="0"
+          aria-label="WH가 막힌 골목을 탐색하는 2D 게임 화면입니다. 왼쪽과 오른쪽 방향키로 이동하고 E 또는 Space로 조사합니다."
+        ></canvas>
+
+        <header id="hud" class="hud is-hidden" aria-label="게임 진행 정보">
+          <div class="chapter-chip">
+            <span>CHAPTER 01</span>
+            <strong>수와 연산</strong>
+          </div>
+          <div class="objective-card" aria-live="polite">
+            <span class="objective-label">지금 할 일</span>
+            <strong id="objective-text">빵집 담당자에게 상황을 물어보자.</strong>
+          </div>
+          <nav class="hud-actions" aria-label="게임 메뉴">
+            <button id="notebook-button" class="icon-button" type="button" aria-label="계산 수첩 열기">
+              <span aria-hidden="true">📒</span>
+              <span id="notebook-count" class="button-count">0</span>
+            </button>
+            <button id="settings-button" class="icon-button" type="button" aria-label="설정 열기">
+              <span aria-hidden="true">⚙</span>
+            </button>
+          </nav>
+        </header>
+
+        <div id="interaction-prompt" class="interaction-prompt is-hidden" aria-live="polite">
+          <span class="key-cap">E</span>
+          <span id="interaction-text">조사하기</span>
+        </div>
+
+        <div id="toast" class="toast is-hidden" role="status" aria-live="polite"></div>
+
+        <section id="start-screen" class="screen-overlay start-screen" aria-labelledby="game-title">
+          <div class="start-card">
+            <div class="start-copy">
+              <p class="eyebrow">직무수학 어드벤처 · MAP 01</p>
+              <h1 id="game-title"><span>WH의</span> 수학 등굣길</h1>
+              <p class="map-title">막힌 골목의 계산서</p>
+              <p class="start-description">
+                아침 배송차가 골목을 막고 있다. 주문서와 실제 비용을 확인해 계산서의 오류를 찾고,
+                학교로 가는 길을 열자.
+              </p>
+              <div class="start-actions">
+                <button id="new-game-button" class="primary-button" type="button">
+                  새로 시작
+                  <span aria-hidden="true">›</span>
+                </button>
+                <button id="continue-button" class="secondary-button is-hidden" type="button">이어하기</button>
+              </div>
+            </div>
+            <div class="start-visual" aria-hidden="true">
+              <div class="sun-disc"></div>
+              <div class="route-line"><span></span><span></span><span></span></div>
+              <div class="wh-portrait">
+                <div class="portrait-hair"></div>
+                <div class="portrait-head">
+                  <div class="portrait-eye left"><i></i></div>
+                  <div class="portrait-eye right"><i></i></div>
+                  <div class="portrait-smile"></div>
+                </div>
+                <div class="portrait-neck"></div>
+                <div class="portrait-body"><b>WH</b></div>
+              </div>
+              <div class="visual-caption">
+                <span>오늘의 목표</span>
+                <strong>17만 원 안에서 납품 비용 확인하기</strong>
+              </div>
+            </div>
+          </div>
+          <div class="control-strip" aria-label="기본 조작 안내">
+            <span><kbd>←</kbd><kbd>→</kbd> 이동</span>
+            <span><kbd>E</kbd><kbd>Space</kbd> 조사</span>
+            <span><kbd>Esc</kbd> 닫기</span>
+          </div>
+        </section>
+
+        <section id="dialogue-panel" class="dialogue-panel is-hidden" aria-live="polite">
+          <div id="speaker-avatar" class="speaker-avatar" aria-hidden="true">WH</div>
+          <div class="dialogue-copy">
+            <span id="speaker-name" class="speaker-name">WH</span>
+            <p id="dialogue-text"></p>
+          </div>
+          <button id="dialogue-next" class="dialogue-next" type="button">
+            계속
+            <span aria-hidden="true">›</span>
+          </button>
+        </section>
+
+        <section id="notebook-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="notebook-title">
+          <div class="modal-card notebook-card">
+            <header class="modal-header">
+              <div>
+                <p class="eyebrow">WH'S FIELD NOTES</p>
+                <h2 id="notebook-title">계산 수첩</h2>
+              </div>
+              <button class="close-button" type="button" data-close="notebook-panel" aria-label="계산 수첩 닫기">×</button>
+            </header>
+            <p class="notebook-intro">현장에서 발견한 정보가 여기에 기록돼. 계산할 때 언제든 다시 확인할 수 있어.</p>
+            <div id="notebook-entries" class="notebook-entries"></div>
+          </div>
+        </section>
+
+        <section id="challenge-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="challenge-title">
+          <div class="modal-card challenge-card">
+            <header class="modal-header">
+              <div>
+                <p class="eyebrow">DELIVERY CHECK</p>
+                <h2 id="challenge-title">납품 비용 확인</h2>
+              </div>
+              <button class="close-button" type="button" data-close="challenge-panel" aria-label="계산 화면 닫기">×</button>
+            </header>
+
+            <div class="challenge-progress" aria-label="문제 해결 단계">
+              <div class="progress-step is-active" data-step-indicator="1"><span>1</span> 실제 비용</div>
+              <div class="progress-line"></div>
+              <div class="progress-step" data-step-indicator="2"><span>2</span> 오류 찾기</div>
+              <div class="progress-line"></div>
+              <div class="progress-step" data-step-indicator="3"><span>3</span> 납품 확인</div>
+            </div>
+
+            <div id="challenge-step-1" class="challenge-step">
+              <div class="challenge-grid">
+                <div>
+                  <h3>수첩의 정보로 실제 비용을 계산하자.</h3>
+                  <p>각 재료는 각각 <strong>수량 × 단가</strong>로 계산하고, 계약 배송비 1회분을 한 번만 더해.</p>
+                  <p class="calculation-rule">전체 비용 = 재료 3개 항목의 합 + 배송비 1회</p>
+                  <button id="challenge-notebook-button" class="notebook-inline-button" type="button">
+                    <span aria-hidden="true">📒</span> 수집한 계산 수첩 다시 보기
+                  </button>
+                  <div id="cost-cards" class="cost-cards"></div>
+                </div>
+                <form id="cost-form" class="answer-sheet" novalidate>
+                  <label for="total-cost">올바른 전체 비용</label>
+                  <div class="money-input">
+                    <input id="total-cost" name="totalCost" inputmode="numeric" autocomplete="off" placeholder="예: 160000" />
+                    <span>원</span>
+                  </div>
+                  <label for="remaining-budget">예산에서 남는 금액</label>
+                  <div class="money-input">
+                    <input id="remaining-budget" name="remainingBudget" inputmode="numeric" autocomplete="off" placeholder="예: 10000" />
+                    <span>원</span>
+                  </div>
+                  <p id="cost-feedback" class="form-feedback" aria-live="polite"></p>
+                  <button class="primary-button full-button" type="submit">계산 확인</button>
+                </form>
+              </div>
+            </div>
+
+            <div id="challenge-step-2" class="challenge-step is-hidden">
+              <div class="challenge-grid invoice-layout">
+                <div>
+                  <h3>계산서에서 잘못 입력된 항목을 찾자.</h3>
+                  <p>직접 구한 전체 비용과 아래 청구표를 비교해, 실제 비용보다 5,000원 더해진 항목을 찾아보자.</p>
+                  <div class="invoice-total">
+                    <span>현재 청구액</span>
+                    <strong>172,500원</strong>
+                  </div>
+                </div>
+                <form id="invoice-form" class="invoice-sheet">
+                  <fieldset>
+                    <legend>오류가 있는 항목 선택</legend>
+                    <label><input type="radio" name="invoiceRow" value="flour" /> <span>밀가루</span><b>55,500원</b></label>
+                    <label><input type="radio" name="invoiceRow" value="milk" /> <span>우유</span><b>51,200원</b></label>
+                    <label><input type="radio" name="invoiceRow" value="butter" /> <span>버터</span><b>54,800원</b></label>
+                    <label><input type="radio" name="invoiceRow" value="delivery" /> <span>배송비</span><b>11,000원</b></label>
+                  </fieldset>
+                  <label for="corrected-fee">선택한 항목의 올바른 금액</label>
+                  <div class="money-input">
+                    <input id="corrected-fee" name="correctedFee" inputmode="numeric" autocomplete="off" placeholder="수첩과 비교해서 입력" />
+                    <span>원</span>
+                  </div>
+                  <p id="invoice-feedback" class="form-feedback" aria-live="polite"></p>
+                  <button class="primary-button full-button" type="submit">계산서 수정</button>
+                </form>
+              </div>
+            </div>
+
+            <div id="challenge-step-3" class="challenge-step challenge-success is-hidden">
+              <div class="success-seal" aria-hidden="true">✓</div>
+              <p class="eyebrow">CHECK COMPLETE</p>
+              <h3>납품 비용 확인 완료!</h3>
+              <p>실제 비용은 <strong>167,500원</strong>, 예산은 <strong>2,500원</strong> 남았어.</p>
+              <div class="corrected-receipt">
+                <span>수정 전 <del>172,500원</del></span>
+                <span aria-hidden="true">→</span>
+                <strong>167,500원</strong>
+              </div>
+              <button id="approve-delivery" class="primary-button" type="button">납품 확인하고 길 열기</button>
+            </div>
+
+            <footer class="hint-bar">
+              <button id="hint-button" class="hint-button" type="button"><span aria-hidden="true">💡</span> 힌트 보기</button>
+              <p id="hint-text" class="hint-text" aria-live="polite">막히면 힌트를 단계별로 확인할 수 있어.</p>
+            </footer>
+          </div>
+        </section>
+
+        <section id="settings-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+          <div class="modal-card settings-card">
+            <header class="modal-header">
+              <div>
+                <p class="eyebrow">SETTINGS</p>
+                <h2 id="settings-title">게임 설정</h2>
+              </div>
+              <button class="close-button" type="button" data-close="settings-panel" aria-label="설정 닫기">×</button>
+            </header>
+            <label class="setting-row">
+              <span><strong>큰 글자</strong><small>대사와 문제 글자를 더 크게 표시해.</small></span>
+              <input id="large-text-toggle" type="checkbox" />
+            </label>
+            <label class="setting-row">
+              <span><strong>움직임 줄이기</strong><small>카메라와 성공 연출의 움직임을 줄여.</small></span>
+              <input id="motion-toggle" type="checkbox" />
+            </label>
+            <label class="setting-row">
+              <span><strong>효과음</strong><small>상호작용과 성공 효과음을 재생해.</small></span>
+              <input id="sound-toggle" type="checkbox" checked />
+            </label>
+          </div>
+        </section>
+
+        <section id="complete-screen" class="screen-overlay complete-screen is-hidden" aria-labelledby="complete-title">
+          <div class="complete-card">
+            <div class="completion-badge" aria-hidden="true"><span>01</span><b>MAP CLEAR</b></div>
+            <p class="eyebrow">CHAPTER 01 · 수와 연산</p>
+            <h2 id="complete-title">막힌 골목이 열렸어!</h2>
+            <p>필요한 수량과 비용을 정확히 계산하니 예산도 지키고 길도 열렸어.</p>
+            <div class="learning-summary">
+              <span>오늘 사용한 수학</span>
+              <strong>수량 × 단가 → 전체 비용 → 예산과 비교</strong>
+            </div>
+            <div class="complete-actions">
+              <button id="replay-button" class="secondary-button" type="button">다시 플레이</button>
+              <button id="next-map-button" class="primary-button" type="button">다음 맵으로</button>
+            </div>
+          </div>
+        </section>
+
+        <nav id="touch-controls" class="touch-controls is-hidden" aria-label="화면 조작">
+          <div>
+            <button id="touch-left" type="button" aria-label="왼쪽으로 이동">←</button>
+            <button id="touch-right" type="button" aria-label="오른쪽으로 이동">→</button>
+          </div>
+          <button id="touch-interact" class="touch-interact" type="button" aria-label="조사하기">E</button>
+        </nav>
+      </section>
+    </main>
+        <script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/game.js"></script>
+    <script type="module" src="./src/dev-tools.mjs"></script>
+  </body>
+</html>

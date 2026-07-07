@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#315f5b"/>
+  <title>WH의 수학 등굣길 — 학원비와 용돈 인출 계획</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map23.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame atm-frame">
+    <canvas id="map23-canvas" tabindex="0" aria-label="WH가 숲길 환승 쉼터 ATM을 이용하는 2D 게임입니다."></canvas>
+
+    <header id="map23-hud" class="hud is-hidden">
+      <div class="chapter-chip atm-chip"><span>CHAPTER 02 · MAP 03</span><strong>환승 쉼터 ATM</strong></div>
+      <div class="objective-card"><span class="objective-label">지금 할 일</span><strong id="map23-objective">ATM 안내판에서 구간별 수수료 규칙을 확인하자.</strong></div>
+      <div class="wallet-chip"><span>필요한 현금</span><b id="wallet-cash">350,000원</b></div>
+    </header>
+
+    <div id="map23-prompt" class="interaction-prompt is-hidden"><span class="key-cap">E</span><span id="map23-prompt-text">ATM 사용</span></div>
+    <div id="map23-toast" class="toast is-hidden" role="status"></div>
+
+    <section id="map23-start" class="screen-overlay atm-start">
+      <div class="start-card atm-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">직무수학 어드벤처 · MAP 03</p>
+          <h1><span>WH의</span> 수학 등굣길</h1>
+          <p class="map-title">학원비와 용돈 인출 계획</p>
+          <p class="start-description">학원비 300,000원과 용돈 50,000원이 필요한 WH. 거래 대금 구간에 따라 달라지는 수수료율과 추가 수수료를 확인하여 계좌에 필요한 총액을 계산하자.</p>
+          <div class="start-actions">
+            <button id="map23-start-button" class="primary-button">ATM으로 가기 <span>→</span></button>
+            <a class="secondary-button back-link" href="./2map2.html">이전 맵</a>
+          </div>
+        </div>
+        <div class="atm-hero" aria-hidden="true">
+          <div class="hero-atm"><span>ATM</span><div>₩</div></div>
+          <div class="hero-breakdown"><i>학원비<br/>300,000원</i><b>+</b><i>용돈<br/>50,000원</i></div>
+          <div class="hero-rule">높은 구간 → 낮은 수수료</div>
+          <div class="atm-caption"><span>목표</span><strong>인출할 현금과 계좌 필요액 계산</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="map23-dialogue" class="dialogue-panel is-hidden">
+      <div id="map23-avatar" class="speaker-avatar">WH</div>
+      <div class="dialogue-copy"><span id="map23-speaker" class="speaker-name">WH</span><p id="map23-dialogue-text"></p></div>
+      <button id="map23-dialogue-next" class="dialogue-next">계속 <span>›</span></button>
+    </section>
+
+    <section id="atm-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="atm-title">
+      <div class="modal-card atm-card">
+        <header class="modal-header">
+          <div><p class="eyebrow">FEE TABLE</p><h2 id="atm-title">거래 수수료 안내</h2></div>
+          <button id="atm-close" class="close-button" aria-label="닫기">×</button>
+        </header>
+
+        <div id="atm-problem" class="atm-problem">
+          <div class="fee-table-wrap">
+            <table class="fee-table">
+              <thead><tr><th>거래 대금 구간</th><th>수수료율</th><th>추가 수수료</th></tr></thead>
+              <tbody id="fee-table-body"></tbody>
+            </table>
+            <div class="wallet-note">
+              <span>WH에게 필요한 현금</span>
+              <strong>학원비 300,000원 + 용돈 50,000원</strong>
+              <small>수수료는 인출 금액과 함께 계좌에서 차감됩니다.</small>
+            </div>
+          </div>
+
+          <form id="atm-form" class="atm-form" novalidate>
+            <fieldset>
+              <legend>① 표에서 찾은 규칙을 고르세요.</legend>
+              <label><input type="radio" name="rule" value="higher-lower"/> 거래 대금 구간이 커질수록 수수료율과 추가 수수료가 낮아진다.</label>
+              <label><input type="radio" name="rule" value="higher-higher"/> 거래 대금 구간이 커질수록 수수료율과 추가 수수료가 높아진다.</label>
+              <label><input type="radio" name="rule" value="same-fee"/> 거래 대금 구간과 관계없이 수수료는 모두 같다.</label>
+            </fieldset>
+
+            <div class="atm-input-grid">
+              <label>② 인출할 현금
+                <div class="money-input"><input name="cashNeeded" inputmode="numeric" autocomplete="off"/><span>원</span></div>
+              </label>
+              <label>③ 해당 거래 대금 구간
+                <select name="interval" aria-label="거래 대금 구간 선택">
+                  <option value="">구간을 선택하세요</option>
+                  <option value="0-50000">0원~50,000원</option>
+                  <option value="50001-100000">50,001원~100,000원</option>
+                  <option value="100001-200000">100,001원~200,000원</option>
+                  <option value="200001-300000">200,001원~300,000원</option>
+                  <option value="300001-400000">300,001원~400,000원</option>
+                  <option value="400001-500000">400,001원~500,000원</option>
+                </select>
+              </label>
+              <label>④ 비율 수수료
+                <div class="money-input"><input name="percentageFee" inputmode="numeric" autocomplete="off"/><span>원</span></div>
+              </label>
+              <label>⑤ 총 수수료
+                <div class="money-input"><input name="totalFee" inputmode="numeric" autocomplete="off"/><span>원</span></div>
+              </label>
+              <label class="account-total-label">⑥ 계좌에 필요한 총액
+                <div class="money-input"><input name="accountDebit" inputmode="numeric" autocomplete="off"/><span>원</span></div>
+              </label>
+            </div>
+
+            <p id="atm-feedback" class="form-feedback" role="status"></p>
+            <div class="atm-actions">
+              <button id="atm-hint" class="secondary-button" type="button">힌트</button>
+              <button class="primary-button" type="submit">인출 계획 확인</button>
+            </div>
+          </form>
+
+          <aside class="mini-calculator" aria-label="계산기">
+            <div class="calculator-title"><span>계산 도구</span><small>% 버튼 사용 가능</small></div>
+            <input id="calculator-display" class="calculator-display" type="text" value="0" readonly aria-label="계산 결과"/>
+            <div id="calculator-pad" class="calculator-pad">
+              <button type="button" data-calc="clear" class="calc-clear">C</button>
+              <button type="button" data-calc="backspace">⌫</button>
+              <button type="button" data-calc="%" class="calc-operation">%</button>
+              <button type="button" data-calc="/" class="calc-operation">÷</button>
+              <button type="button" data-calc="7">7</button><button type="button" data-calc="8">8</button><button type="button" data-calc="9">9</button><button type="button" data-calc="*" class="calc-operation">×</button>
+              <button type="button" data-calc="4">4</button><button type="button" data-calc="5">5</button><button type="button" data-calc="6">6</button><button type="button" data-calc="-" class="calc-operation">−</button>
+              <button type="button" data-calc="1">1</button><button type="button" data-calc="2">2</button><button type="button" data-calc="3">3</button><button type="button" data-calc="+" class="calc-operation">+</button>
+              <button type="button" data-calc="0" class="calc-zero">0</button><button type="button" data-calc=".">.</button><button type="button" data-calc="equals" class="calc-equals">=</button>
+            </div>
+            <p class="calculator-example">예: 350000 × 0.06 % =</p>
+          </aside>
+        </div>
+
+        <div id="atm-success" class="atm-success is-hidden">
+          <div class="receipt">
+            <span>WITHDRAWAL PLAN</span><b>현금 350,000원</b>
+            <dl>
+              <div><dt>비율 수수료</dt><dd>210원</dd></div>
+              <div><dt>추가 수수료</dt><dd>100원</dd></div>
+              <div><dt>총 수수료</dt><dd>310원</dd></div>
+              <div><dt>계좌 차감액</dt><dd>350,310원</dd></div>
+              <div><dt>학원비</dt><dd>300,000원</dd></div>
+              <div><dt>용돈</dt><dd>50,000원</dd></div>
+            </dl>
+          </div>
+          <button id="confirm-withdrawal" class="primary-button">350,000원 인출하기</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="map23-complete" class="screen-overlay complete-screen atm-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>03</span><b>MAP CLEAR</b></div>
+        <p class="eyebrow">CHAPTER 02 · 변화와 관계</p>
+        <h2>학원비도, 용돈도 준비 완료!</h2>
+        <p>금액이 어느 구간에 속하는지 찾고, 수수료율과 추가 수수료의 대응 관계를 이용해 계좌 필요액을 계산했어.</p>
+        <div class="learning-summary atm-summary"><span>계산 결과</span><strong>350,000원 + 수수료 310원 = 350,310원</strong></div>
+        <div class="complete-actions"><button id="map23-replay" class="secondary-button">다시 플레이</button><button id="map23-next" class="primary-button">2map4로 이동</button></div>
+      </div>
+    </section>
+
+    <nav id="map23-touch" class="touch-controls is-hidden">
+      <div><button id="map23-left">←</button><button id="map23-right">→</button></div>
+      <button id="map23-interact" class="touch-interact">E</button>
+    </nav>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map23.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

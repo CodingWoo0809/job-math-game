@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#153b52" />
+    <meta name="description" content="WH가 자율주행 셔틀의 단위를 변환해 챕터 2로 이동하는 직무수학 어드벤처" />
+    <title>WH의 수학 등굣길 — 출발 5분 전, 단위 점검</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./map3.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-frame depot-frame" aria-label="직무수학 어드벤처 세 번째 맵">
+        <canvas
+          id="map3-canvas"
+          tabindex="0"
+          aria-label="WH가 자율주행 셔틀 환승센터를 탐색하는 2D 게임입니다. A와 D 또는 방향키로 이동하고 E 또는 Enter로 상호작용합니다."
+        ></canvas>
+
+        <header id="map3-hud" class="hud is-hidden">
+          <div class="chapter-chip depot-chip">
+            <span>CHAPTER 01 · MAP 03</span>
+            <strong>단위 변환 점검</strong>
+          </div>
+          <div class="objective-card" aria-live="polite">
+            <span class="objective-label">지금 할 일</span>
+            <strong id="map3-objective">셔틀 운영 기술자에게 상황을 물어보자.</strong>
+          </div>
+          <nav class="hud-actions" aria-label="게임 메뉴">
+            <button id="unit-table-button" class="icon-button unit-button" type="button" aria-label="단위 변환표 열기">
+              <span aria-hidden="true">⇄</span>
+            </button>
+            <div class="device-count" aria-label="활성화한 장치 수"><b id="device-count">0</b><span>/ 5</span></div>
+          </nav>
+        </header>
+
+        <div id="map3-interaction-prompt" class="interaction-prompt is-hidden" aria-live="polite">
+          <span class="key-cap">E</span><span id="map3-interaction-text">점검하기</span>
+        </div>
+        <div id="map3-toast" class="toast is-hidden" role="status" aria-live="polite"></div>
+
+        <section id="map3-start-screen" class="screen-overlay depot-start" aria-labelledby="map3-title">
+          <div class="start-card depot-start-card">
+            <div class="start-copy">
+              <p class="eyebrow">직무수학 어드벤처 · CHAPTER 01 FINAL</p>
+              <h1 id="map3-title"><span>WH의</span> 수학 등굣길</h1>
+              <p class="map-title">출발 5분 전, 단위 점검</p>
+              <p class="start-description">
+                학교 방향 셔틀의 다섯 장치가 서로 다른 단위 때문에 멈췄다. 기록을 장치가 요구하는
+                단위로 바꾸어 출발 점검을 완료하자.
+              </p>
+              <div class="start-actions">
+                <button id="map3-start-button" class="primary-button" type="button">환승센터 들어가기 <span aria-hidden="true">→</span></button>
+                <a class="secondary-button back-link" href="./1map2.html">이전 맵</a>
+              </div>
+            </div>
+            <div class="depot-hero" aria-hidden="true">
+              <div class="depot-sun"></div>
+              <div class="hero-track"></div>
+              <div class="hero-shuttle">
+                <div class="hero-window"><i></i><i></i><i></i></div>
+                <b>SCHOOL LINE</b>
+                <span class="hero-wheel one"></span><span class="hero-wheel two"></span>
+              </div>
+              <div class="unit-cloud"><span>L</span><span>분</span><span>g</span><span>cm</span><span>초</span></div>
+              <div class="depot-caption"><span>출발 조건</span><strong>서로 다른 단위를 장치 표준에 맞추기</strong></div>
+            </div>
+          </div>
+          <div class="control-strip">
+            <span><kbd>A</kbd><kbd>D</kbd> 이동</span>
+            <span><kbd>E</kbd> 장치 점검</span>
+            <span><kbd>Esc</kbd> 닫기</span>
+          </div>
+        </section>
+
+        <section id="map3-dialogue" class="dialogue-panel is-hidden" aria-live="polite">
+          <div id="map3-speaker-avatar" class="speaker-avatar" aria-hidden="true">WH</div>
+          <div class="dialogue-copy">
+            <span id="map3-speaker-name" class="speaker-name">WH</span>
+            <p id="map3-dialogue-text"></p>
+          </div>
+          <button id="map3-dialogue-next" class="dialogue-next" type="button">계속 <span aria-hidden="true">›</span></button>
+        </section>
+
+        <section id="unit-table-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="unit-table-title">
+          <div class="modal-card unit-table-card">
+            <header class="modal-header">
+              <div><p class="eyebrow">UNIT REFERENCE</p><h2 id="unit-table-title">단위 변환표</h2></div>
+              <button id="unit-table-close" class="close-button" type="button" aria-label="단위 변환표 닫기">×</button>
+            </header>
+            <p class="notebook-intro">같은 양을 다른 단위로 나타낼 때 사용하는 관계야. 정답 대신 변환 관계만 제공해.</p>
+            <div class="unit-relations">
+              <article><span>들이</span><strong>1 L = 1,000 mL</strong></article>
+              <article><span>시간</span><strong>1시간 = 60분</strong></article>
+              <article><span>시간</span><strong>1분 = 60초</strong></article>
+              <article><span>무게</span><strong>1 kg = 1,000 g</strong></article>
+              <article><span>길이</span><strong>1 km = 1,000 m<br />1 m = 100 cm</strong></article>
+            </div>
+          </div>
+        </section>
+
+        <section id="conversion-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="conversion-title">
+          <div class="modal-card conversion-card">
+            <header class="modal-header">
+              <div><p id="conversion-badge" class="eyebrow">UNIT CHECK</p><h2 id="conversion-title">장치 이름</h2></div>
+              <button id="conversion-close" class="close-button" type="button" aria-label="단위 변환 문제 닫기">×</button>
+            </header>
+            <div class="conversion-layout">
+              <div class="device-visual" aria-hidden="true">
+                <div id="device-icon" class="device-icon">⇄</div>
+                <div class="device-gauge"><i id="device-gauge-fill"></i></div>
+                <span>UNIT INPUT REQUIRED</span>
+              </div>
+              <form id="conversion-form" class="conversion-form" novalidate>
+                <p id="conversion-purpose" class="conversion-purpose"></p>
+                <div class="source-reading"><span>현재 기록</span><strong id="conversion-source"></strong></div>
+                <h3 id="conversion-question"></h3>
+                <div class="money-input conversion-input">
+                  <input id="conversion-answer" name="answer" inputmode="numeric" autocomplete="off" placeholder="숫자로 입력" />
+                  <span id="conversion-unit"></span>
+                </div>
+                <p id="conversion-feedback" class="form-feedback" aria-live="polite"></p>
+                <div class="conversion-actions">
+                  <button id="conversion-hint" class="secondary-button" type="button">힌트 보기</button>
+                  <button class="primary-button" type="submit">장치에 입력</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section id="launch-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="launch-title">
+          <div class="modal-card launch-card">
+            <div class="launch-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <p class="eyebrow">ALL SYSTEMS READY</p>
+            <h2 id="launch-title">출발 점검 완료</h2>
+            <p>다섯 장치가 모두 올바른 단위를 인식했어. 학교 방향 셔틀에 탑승할 수 있어.</p>
+            <div id="launch-summary" class="launch-summary"></div>
+            <button id="launch-shuttle" class="primary-button" type="button">WH 탑승 · 셔틀 출발</button>
+            <button id="launch-close" class="secondary-button" type="button">조금 더 둘러보기</button>
+          </div>
+        </section>
+
+        <section id="map3-complete" class="screen-overlay complete-screen chapter-complete is-hidden" aria-labelledby="map3-complete-title">
+          <div class="complete-card chapter-complete-card">
+            <div class="completion-badge"><span>01</span><b>CHAPTER CLEAR</b></div>
+            <p class="eyebrow">수와 연산 · 완료</p>
+            <h2 id="map3-complete-title">단위를 맞추자, 길이 움직였어!</h2>
+            <p>비용, 어림과 단위 변환으로 등굣길의 첫 구간을 통과했어. 셔틀 창밖에서는 시간과 거리가 함께 변하기 시작해.</p>
+            <div class="chapter-bridge">
+              <span>CHAPTER 01 · 수와 연산</span><b>→</b><span>CHAPTER 02 · 변화와 관계</span>
+            </div>
+            <div class="complete-actions">
+              <button id="map3-replay" class="secondary-button" type="button">다시 플레이</button>
+              <button id="enter-chapter2" class="primary-button" type="button">챕터 2로 이동</button>
+            </div>
+          </div>
+        </section>
+
+        <nav id="map3-touch-controls" class="touch-controls is-hidden" aria-label="화면 조작">
+          <div>
+            <button id="map3-touch-left" type="button" aria-label="왼쪽으로 이동">←</button>
+            <button id="map3-touch-right" type="button" aria-label="오른쪽으로 이동">→</button>
+          </div>
+          <button id="map3-touch-interact" class="touch-interact" type="button" aria-label="상호작용">E</button>
+        </nav>
+      </section>
+    </main>
+        <script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map3.js"></script>
+    <script type="module" src="./src/dev-tools.mjs"></script>
+  </body>
+</html>

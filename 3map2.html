@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#071019"/>
+  <meta name="description" content="정육면체 쌓기나무의 평면도, 정면도, 우측면도, 좌측면도를 보고 총 층수와 2층 정육면체 수를 구하는 직무수학 게임"/>
+  <title>WH의 수학 등굣길 — 사방 투상 보안실</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map32.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame projection-frame">
+    <canvas id="map32-canvas" aria-label="네 방향 감시 장치가 설치된 정육면체 적재 격실"></canvas>
+
+    <header id="map32-hud" class="hud is-hidden">
+      <div class="chapter-chip projection-chip"><span>CHAPTER 03 · MAP 02</span><strong>사방 투상 보안실 A-02</strong></div>
+      <div class="objective-card"><span class="objective-label">탈출 조건</span><strong id="map32-objective">네 투상도로 층수와 2층 하중을 3회 판독하자.</strong></div>
+      <div class="scan-chip"><span>투상 인증</span><b id="scan-count">0 / 3</b></div>
+    </header>
+
+    <section id="map32-start" class="screen-overlay projection-start" aria-labelledby="map32-title">
+      <div class="start-card projection-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">CONTAINMENT A-02 · FOUR-VIEW LOAD LOCK</p>
+          <h1 id="map32-title"><span>WH의</span> 두 번째 격실</h1>
+          <p class="map-title">사방 투상 보안실</p>
+          <p class="start-description">문이 닫히자 바닥의 정육면체 적재 리프트가 움직이기 시작했다. 고장 난 입체 스캐너에는 평면도·정면도·우측면도·좌측면도만 남아 있다. 세 구조물의 총 층수와 2층 하중을 정확히 입력해야 리프트가 다음 문에 도착한다.</p>
+          <div class="view-agreement">
+            <span><b>평면도</b> 위에서 본 모양</span>
+            <span><b>정면도</b> 앞에서 본 모양</span>
+            <span><b>우측면도</b> 정면 기준 오른쪽에서 본 모양</span>
+            <span><b>좌측면도</b> 정면 기준 왼쪽에서 본 모양</span>
+          </div>
+          <div class="start-actions"><button id="map32-start-button" class="primary-button" type="button">투상 장치 가동</button><a class="secondary-button back-link" href="./3map1.html">이전 격실</a></div>
+        </div>
+        <div class="projection-hero" aria-hidden="true">
+          <div class="hero-view hero-top">평면도<small>TOP</small></div>
+          <div class="hero-view hero-front">정면도<small>FRONT</small></div>
+          <div class="hero-view hero-left">좌측면도<small>LEFT</small></div>
+          <div class="hero-view hero-right">우측면도<small>RIGHT</small></div>
+          <div class="cube-stack-icon"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="orbit-line"></div>
+          <p>기준 방향을 고정하고 네 도면을 함께 읽어라.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="map32-puzzle" class="modal-layer is-hidden" aria-label="쌓기나무 투상도 주관식 문제">
+      <div class="modal-card projection-card">
+        <header class="projection-header">
+          <div><p class="eyebrow">ORTHOGRAPHIC LOAD SCAN · <span id="projection-difficulty">기초</span></p><h2><span id="projection-number">1</span>번 구조물 판독</h2></div>
+          <div id="projection-slots" class="projection-slots" aria-label="해결한 투상도 문제"><i></i><i></i><i></i></div>
+        </header>
+        <div class="projection-instruction"><strong id="structure-title">구조물 도면</strong><span>색칠된 한 칸은 해당 방향에서 보이는 정육면체 한 면입니다.</span></div>
+        <div id="projection-views" class="projection-views" aria-label="평면도, 정면도, 우측면도, 좌측면도"></div>
+        <form id="projection-form" class="projection-answer" novalidate>
+          <div class="answer-copy"><span>LOAD LOCK · 주관식</span><strong>도면 속 구조물의 정보를 직접 입력하세요.</strong><small>2층 정육면체 수는 높이가 2층 이상인 기둥마다 1개씩 세면 됩니다.</small></div>
+          <label><span>구조물의 총 층수</span><input id="total-layers-input" name="total-layers" type="number" min="1" max="9" inputmode="numeric" autocomplete="off" required/><b>층</b></label>
+          <label><span>2층에 있는 정육면체</span><input id="second-layer-input" name="second-layer-cubes" type="number" min="0" max="25" inputmode="numeric" autocomplete="off" required/><b>개</b></label>
+          <button id="projection-submit" class="primary-button" type="submit">하중 정보 전송</button>
+        </form>
+        <p id="map32-feedback" class="projection-feedback" role="status">네 도면의 같은 방향과 높이를 대응시켜 보세요.</p>
+      </div>
+    </section>
+
+    <section id="map32-complete" class="screen-overlay complete-screen projection-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>02</span><b>LOAD LOCK RELEASED</b></div>
+        <p class="eyebrow">THREE ORTHOGRAPHIC READINGS VERIFIED</p>
+        <h2>정육면체 리프트가 다음 층에 도착했어!</h2>
+        <p>평면도는 바닥에서 차지하는 위치를, 정면도와 측면도는 각 방향에서 보이는 높이를 알려 준다. 여러 방향의 정보를 대응하면 보이지 않는 입체 구조도 판단할 수 있어.</p>
+        <div class="learning-summary projection-summary"><span>인증 결과</span><strong>총 층수와 2층 정육면체 수 주관식 판독 3회 성공</strong></div>
+        <div class="complete-actions"><button id="map32-replay" class="secondary-button" type="button">다시 도전</button><button id="map32-next" class="primary-button" type="button">3map3 격실로 이동</button></div>
+      </div>
+    </section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map32.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

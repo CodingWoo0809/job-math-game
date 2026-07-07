@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#9be8ff"/>
+  <meta name="description" content="WH가 과제 제출 대기시간 자료를 나열하고 평균, 중앙값, 최빈값을 비교해 상황에 맞는 대푯값을 결정하는 직무수학 게임"/>
+  <title>WH의 수학 탈출기 · 대기시간 대표값 결정</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map45.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame interpretation-frame decision-frame">
+    <canvas id="map45-canvas" aria-label="학교 안에서 WH가 과제 제출 대기시간 자료의 대표값을 결정하는 장면"></canvas>
+
+    <header id="map45-hud" class="hud is-hidden">
+      <div class="chapter-chip interpretation-chip"><span>CHAPTER 04 · MAP 05</span><strong>대기시간 대표값 결정</strong></div>
+      <div class="objective-card"><span class="objective-label">현재 목표</span><strong id="map45-objective">수학 선생님에게 대기시간 안내 목적을 물어보자.</strong></div>
+      <div class="interpretation-count-chip"><span>수집 정보</span><b id="decision-count">0 / 6</b></div>
+    </header>
+
+    <section id="map45-start" class="screen-overlay interpretation-start decision-start" aria-labelledby="map45-title">
+      <div class="start-card interpretation-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">FINAL BELL · DATA DECISION</p>
+          <h1 id="map45-title"><span>WH</span>와 대기시간 대표값 결정</h1>
+          <p class="map-title">자료와 가능성의 마지막 학교 안 길</p>
+          <p class="start-description">WH가 수학 교실 앞에 도착하자 선생님과 학생회가 과제 제출 줄 안내문을 두고 고민하고 있다. 최근 7일 동안 학생들이 과제를 제출하며 기다린 시간이 적혀 있는데, 하루는 프린터 고장으로 대기시간이 크게 튀었다. WH는 기록을 숫자 자료로 나타내고 평균, 중앙값, 최빈값을 비교해 안내문에 가장 알맞은 대푯값을 정하려 한다.</p>
+          <div class="interpretation-rules">
+            <span><b>이동</b> 키보드 화살표 방향키로 WH를 움직인다.</span>
+            <span><b>조사</b> 선생님, 학생회, 대기시간 기록판, 대푯값 안내판 가까이에서 `Space Bar`를 누른다.</span>
+            <span><b>인벤토리</b> `I` 키로 WH의 직무수학 교과서와 수집한 자료를 확인한다.</span>
+          </div>
+          <div class="start-actions">
+            <button id="map45-start-button" class="primary-button" type="button">대기시간 자료 조사 시작</button>
+            <a class="secondary-button back-link" href="./4map4.html">4map4 다시 보기</a>
+          </div>
+        </div>
+        <div class="interpretation-hero decision-hero" aria-hidden="true">
+          <div class="school-door-hero">MATH</div>
+          <div class="dashboard-hero">
+            <i></i><i></i><i></i><i></i>
+            <p>자료의 대표값은 상황에 따라 달라진다.</p>
+          </div>
+          <p class="hero-caption">극단적인 값이 있을 때 평균, 중앙값, 최빈값이 각각 어떻게 달라지는지 비교해 보통 상황을 가장 잘 나타내는 값을 고른다.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside id="map45-control-guide" class="control-guide is-hidden" aria-label="조작 안내">
+      <span><b>↑ ↓ ← →</b> 이동</span>
+      <span><b>Space</b> 조사</span>
+      <span><b>I</b> 인벤토리</span>
+    </aside>
+
+    <div id="map45-interaction-prompt" class="interaction-prompt is-hidden" aria-live="polite">
+      <b id="map45-interaction-target">대상</b>
+      <span id="map45-interaction-text">Space Bar로 조사</span>
+    </div>
+
+    <section id="map45-dialogue" class="dialogue-box is-hidden" aria-live="polite" aria-labelledby="map45-dialogue-speaker">
+      <div>
+        <span id="map45-dialogue-speaker">대화</span>
+        <p id="map45-dialogue-text">대화 내용</p>
+      </div>
+      <button id="map45-dialogue-close" type="button" aria-label="대화 닫기">닫기</button>
+    </section>
+
+    <section id="map45-inventory" class="inventory-panel is-hidden" aria-labelledby="map45-inventory-title">
+      <div class="inventory-card">
+        <header>
+          <div>
+            <p class="eyebrow">WH INVENTORY · I</p>
+            <h2 id="map45-inventory-title">교과서와 수집한 결정 자료</h2>
+          </div>
+          <button id="map45-inventory-close" type="button" aria-label="인벤토리 닫기">닫기</button>
+        </header>
+        <div class="inventory-grid">
+          <article>
+            <h3>직무수학 교과서</h3>
+            <div id="map45-textbook-list" class="inventory-list"></div>
+          </article>
+          <article>
+            <h3>이번 맵에서 모은 정보</h3>
+            <div id="map45-notes-list" class="inventory-list"></div>
+          </article>
+        </div>
+        <p id="map45-inventory-hint" class="inventory-hint">교과서는 평균, 중앙값, 최빈값의 뜻을 알려 주지만, 실제 대기시간 기록은 학교 안에서 직접 조사해야 한다.</p>
+      </div>
+    </section>
+
+    <section id="map45-puzzle" class="modal-layer is-hidden" aria-label="수집한 자료를 나열하고 평균 중앙값 최빈값을 구하여 상황에 맞는 대표값을 결정하는 문제">
+      <div class="modal-card interpretation-card">
+        <header class="interpretation-header">
+          <div>
+            <p class="eyebrow">DATA DECISION · <span id="decision-rule">평균·중앙값·최빈값</span></p>
+            <h2>과제 제출 대기시간 안내문 작성하기</h2>
+          </div>
+          <button id="decision-close" type="button" aria-label="결정창 닫기">닫기</button>
+        </header>
+
+        <div class="interpretation-workspace">
+          <article class="interpretation-visual-panel">
+            <div class="panel-heading"><span>과제 제출 대기시간 기록</span><strong>수집 정보 기반</strong></div>
+            <div id="decision-summary" class="collected-summary">수집한 정보 요약</div>
+            <div id="decision-visual" class="interpretation-visual" aria-label="7일간 과제 제출 대기시간 기록과 대푯값 계산 카드"></div>
+            <p class="interpretation-note">먼저 기록을 숫자 자료로 나타낸 뒤, 평균·중앙값·최빈값을 각각 구하고 상황에 맞게 비교하세요.</p>
+          </article>
+
+          <form id="decision-form" class="interpretation-form" novalidate>
+            <div class="answer-copy">
+              <span>DECISION LOG · 마지막 분석</span>
+              <strong>자료를 나열하고 세 대푯값을 구한 뒤 안내문에 쓸 대표값을 정하세요.</strong>
+              <small id="decision-help">입력칸에는 정답 예시가 없습니다. 막히면 `I` 키로 교과서와 수집 자료를 다시 확인하세요.</small>
+            </div>
+            <div class="answer-row">
+              <aside id="decision-example" class="interpretation-example">
+                <b>생각해 볼 예시</b>
+                <p>자료에 아주 큰 값이 하나 섞이면 평균이 커질 수 있어. 최빈값은 가장 자주 나온 값을 알려 주지만, 그 값이 상황을 가장 잘 설명한다고 항상 말할 수는 없다.</p>
+              </aside>
+              <div class="answer-column">
+                <div id="decision-fields" class="interpretation-fields" aria-label="대기시간 자료 나열과 대표값 결정 입력">
+                  <label class="interpretation-field">
+                    <span>대기시간 기록을 작은 수부터 나열한 자료</span>
+                    <span class="text-with-unit"><input name="sortedData" type="text" autocomplete="off" required placeholder="숫자를 쉼표로 나열"/></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>평균 대기시간</span>
+                    <span class="number-with-unit"><input name="meanValue" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" required/><b>분</b></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>중앙값</span>
+                    <span class="number-with-unit"><input name="medianValue" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" required/><b>분</b></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>최빈값</span>
+                    <span class="text-with-unit"><input name="modeValue" type="text" autocomplete="off" required placeholder="숫자"/></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>안내문에 사용할 가장 알맞은 대푯값</span>
+                    <span class="text-with-unit"><input name="representativeValue" type="text" autocomplete="off" required placeholder="대푯값 이름"/></span>
+                  </label>
+                </div>
+                <button id="decision-submit" class="primary-button" type="submit">안내문 제출</button>
+                <p id="map45-feedback" class="interpretation-feedback" role="status">먼저 모은 정보가 충분한지 확인해 보세요.</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="map45-resolution" class="screen-overlay resolution-screen is-hidden" aria-labelledby="map45-resolution-title">
+      <div class="resolution-card">
+        <p class="eyebrow">FINAL DECISION</p>
+        <h2 id="map45-resolution-title">대기시간 안내문이 붙고 있어!</h2>
+        <p id="map45-resolution-text">해결 설명이 여기에 표시됩니다.</p>
+        <button id="map45-resolution-continue" class="primary-button" type="button">수학 교실로 들어가기</button>
+      </div>
+    </section>
+
+    <section id="map45-complete" class="screen-overlay complete-screen interpretation-complete decision-complete is-hidden">
+      <div class="complete-card finale-card">
+        <div class="completion-badge"><span>05</span><b>DATA DECISION CLEAR</b></div>
+        <p class="eyebrow">THE FIRST BELL RINGS · TRUE ENDING</p>
+        <h2>WH, 수학 수업에 힘차게 들어가다</h2>
+        <p>교실 문이 열리는 순간, 집에서 학교까지 지나온 장면들이 주마등처럼 WH의 눈앞을 스친다. 교과서 속 수학은 종이에 갇힌 문제가 아니라, 길 위의 문제를 해결하게 해 준 실제 도구였다.</p>
+
+        <div class="finale-stage" aria-label="chapter1부터 chapter4까지의 주요 장면이 WH 주변을 스쳐 지나가는 엔딩 애니메이션">
+          <div class="finale-light finale-light-one"></div>
+          <div class="finale-light finale-light-two"></div>
+          <div class="finale-door">
+            <span>MATH</span>
+            <strong>수학 교실</strong>
+          </div>
+          <div class="finale-wh" aria-hidden="true">
+            <i class="finale-wh-head"></i>
+            <i class="finale-wh-body">WH</i>
+          </div>
+          <article class="montage-card montage-card-one">
+            <span>CHAPTER 01</span>
+            <b>수와 연산</b>
+            <p>납품 비용, 어림, 단위 변환으로 길을 열었다.</p>
+          </article>
+          <article class="montage-card montage-card-two">
+            <span>CHAPTER 02</span>
+            <b>변화와 관계</b>
+            <p>비, 백분율, 표, 그래프, 방정식으로 사람들을 도왔다.</p>
+          </article>
+          <article class="montage-card montage-card-three">
+            <span>CHAPTER 03</span>
+            <b>도형과 측정</b>
+            <p>전개도, 삼면도, 닮음비, 넓이와 부피로 큐브 공간을 탈출했다.</p>
+          </article>
+          <article class="montage-card montage-card-four">
+            <span>CHAPTER 04</span>
+            <b>자료와 가능성</b>
+            <p>경우의 수, 가능성, 표와 그래프, 대푯값으로 학교 앞 문제를 해결했다.</p>
+          </article>
+          <div class="finale-board">
+            <span>오늘의 한 줄</span>
+            <strong>수학은 상황을 읽고, 더 나은 선택을 하게 해 주는 힘이다.</strong>
+          </div>
+        </div>
+
+        <div class="learning-summary interpretation-summary-card finale-summary">
+          <span>게임 클리어</span>
+          <strong>WH는 수학의 필요성과 유용성을 몸으로 느끼며, 첫 종소리와 함께 수학 수업에 들어갔다.</strong>
+        </div>
+        <div class="complete-actions">
+          <button id="map45-replay" class="secondary-button" type="button">엔딩 다시 보기</button>
+          <button id="map45-next" class="primary-button" type="button">게임 첫 화면으로</button>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map45.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

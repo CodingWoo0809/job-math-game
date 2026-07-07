@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#247d74"/>
+  <meta name="description" content="증가와 감소, 주기적 변화 그래프를 해석해 스마트 묘목장 관수 통로를 건너는 직무수학 게임"/>
+  <title>WH의 수학 등굣길 — 물길이 쉬는 5분</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map24.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame nursery-frame">
+    <canvas id="map24-canvas" tabindex="0" aria-label="WH가 스마트 묘목장의 관수 그래프를 해석하는 2D 게임입니다."></canvas>
+
+    <header id="map24-hud" class="hud is-hidden">
+      <div class="chapter-chip nursery-chip"><span>CHAPTER 02 · MAP 04</span><strong>스마트 묘목장</strong></div>
+      <div class="objective-card"><span class="objective-label">지금 할 일</span><strong id="map24-objective">묘목 관리사에게 물줄기 상황을 물어보자.</strong></div>
+      <div class="graph-count"><b id="graph-count">0</b><span>/ 2 그래프</span></div>
+    </header>
+
+    <div id="map24-prompt" class="interaction-prompt is-hidden"><span class="key-cap">E</span><span id="map24-prompt-text">확인하기</span></div>
+    <div id="map24-toast" class="toast is-hidden" role="status"></div>
+
+    <section id="map24-start" class="screen-overlay nursery-start" aria-labelledby="map24-title">
+      <div class="start-card nursery-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">직무수학 어드벤처 · MAP 04</p>
+          <h1 id="map24-title"><span>WH의</span> 수학 등굣길</h1>
+          <p class="map-title">물길이 쉬는 5분</p>
+          <p class="start-description">스마트 묘목장의 자동 관수기가 학교로 가는 통로까지 물을 뿜고 있다. 물탱크의 증가·감소와 관수량의 반복 주기를 그래프로 읽어 묘목도, WH도 안전한 통과 시간을 찾자.</p>
+          <div class="start-actions">
+            <button id="map24-start-button" class="primary-button" type="button">묘목장 들어가기 <span>→</span></button>
+            <a class="secondary-button back-link" href="./2map3.html">이전 맵</a>
+          </div>
+        </div>
+        <div class="nursery-hero" aria-hidden="true">
+          <div class="hero-sprinkler"><i></i><span></span><span></span><span></span></div>
+          <div class="hero-graph"><svg viewBox="0 0 180 90"><polyline points="10,72 35,20 60,35 85,70 110,38 135,38 160,72"/></svg></div>
+          <div class="hero-cycle">반복 주기 ?분</div>
+          <div class="nursery-caption"><span>핵심 질문</span><strong>그래프가 알려 주는 다음 안전 시간은?</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="map24-dialogue" class="dialogue-panel is-hidden">
+      <div id="map24-avatar" class="speaker-avatar">WH</div>
+      <div class="dialogue-copy"><span id="map24-speaker" class="speaker-name">WH</span><p id="map24-dialogue-text"></p></div>
+      <button id="map24-dialogue-next" class="dialogue-next" type="button">계속 <span>›</span></button>
+    </section>
+
+    <section id="graph-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="graph-title">
+      <div class="modal-card graph-card">
+        <header class="modal-header">
+          <div><p class="eyebrow">SMART IRRIGATION MONITOR</p><h2 id="graph-title">관수 변화 그래프</h2></div>
+          <button id="graph-close" class="close-button" type="button" aria-label="닫기">×</button>
+        </header>
+        <div class="graph-progress"><span id="tank-step" class="is-active"><b>1</b> 물탱크 변화</span><i></i><span id="sprinkler-step"><b>2</b> 관수 주기</span></div>
+
+        <section id="tank-stage" class="graph-stage">
+          <div class="graph-layout">
+            <div class="chart-panel">
+              <div class="chart-heading"><span>물탱크 기록</span><strong>시간에 따른 물의 양</strong></div>
+              <svg id="tank-graph" class="line-graph" viewBox="0 0 620 300" role="img" aria-label="0분 120리터, 10분 180리터, 20분 160리터, 30분 100리터, 40분과 50분 140리터를 나타낸 꺾은선그래프"></svg>
+              <div class="axis-note"><span>세로축: 물의 양(L)</span><span>가로축: 지난 시간(분)</span></div>
+            </div>
+            <form id="tank-form" class="graph-form" novalidate>
+              <fieldset>
+                <legend>① 그래프의 변화를 바르게 설명한 것을 고르세요.</legend>
+                <label><input type="radio" name="description" value="up-down-up-flat"/> 0~10분 증가, 10~30분 감소, 30~40분 증가, 40~50분에는 일정하다.</label>
+                <label><input type="radio" name="description" value="up-up-down-flat"/> 0~20분 증가, 20~40분 감소, 40~50분에는 일정하다.</label>
+                <label><input type="radio" name="description" value="down-up-down-flat"/> 0~10분 감소, 10~30분 증가, 30~40분 감소한다.</label>
+              </fieldset>
+              <label class="select-label">② 물의 양이 가장 빠르게 감소한 구간
+                <select name="fastestDrop">
+                  <option value="">구간을 선택하세요</option>
+                  <option value="0-10">0~10분</option>
+                  <option value="10-20">10~20분</option>
+                  <option value="20-30">20~30분</option>
+                  <option value="30-40">30~40분</option>
+                  <option value="40-50">40~50분</option>
+                </select>
+              </label>
+              <p id="tank-feedback" class="form-feedback" role="status"></p>
+              <div class="graph-actions"><button id="tank-hint" class="secondary-button" type="button">힌트</button><button class="primary-button" type="submit">첫 그래프 확인</button></div>
+            </form>
+          </div>
+        </section>
+
+        <section id="sprinkler-stage" class="graph-stage is-hidden">
+          <div class="graph-layout">
+            <div class="chart-panel">
+              <div class="chart-heading"><span>자동 관수 기록</span><strong>시간에 따른 관수량</strong></div>
+              <svg id="sprinkler-graph" class="line-graph" viewBox="0 0 620 300" role="img" aria-label="0분부터 60분까지 같은 모양이 20분마다 반복되는 분당 관수량 꺾은선그래프"></svg>
+              <div class="axis-note"><span>세로축: 관수량(L/분)</span><span>가로축: 관수 시작 후 시간(분)</span></div>
+              <div class="current-time">현재 시각 <strong>32분</strong></div>
+            </div>
+            <form id="sprinkler-form" class="graph-form" novalidate>
+              <label class="select-label">① 같은 관수 패턴이 반복되는 주기
+                <select name="period"><option value="">주기를 선택하세요</option><option value="10">10분</option><option value="15">15분</option><option value="20">20분</option><option value="25">25분</option></select>
+              </label>
+              <label class="select-label">② 현재 32분 이후, 물이 나오지 않는 가장 가까운 5분 구간
+                <select name="safeWindow"><option value="">시간을 선택하세요</option><option value="30-35">30~35분</option><option value="35-40">35~40분</option><option value="40-45">40~45분</option><option value="45-50">45~50분</option></select>
+              </label>
+              <div class="safety-note"><b>주의</b><p>관수량이 감소하는 중이어도 0L/분이 아니면 통과할 수 없습니다.</p></div>
+              <p id="sprinkler-feedback" class="form-feedback" role="status"></p>
+              <div class="graph-actions"><button id="sprinkler-hint" class="secondary-button" type="button">힌트</button><button class="primary-button" type="submit">안전 시간 예약</button></div>
+            </form>
+          </div>
+        </section>
+
+        <section id="schedule-success" class="schedule-success is-hidden">
+          <div class="schedule-clock"><span>NEXT SAFE WINDOW</span><strong>35:00~40:00</strong><small>관수량 0L/분 · 묘목 관수 일정 유지</small></div>
+          <h3>안전 통과 시간 예약 완료</h3>
+          <p>관수기를 임의로 끄지 않고 원래 주기의 무분사 시간을 이용합니다.</p>
+          <button id="activate-safe-window" class="primary-button" type="button">35분 무분사 구간 시작</button>
+        </section>
+      </div>
+    </section>
+
+    <section id="map24-complete" class="screen-overlay complete-screen nursery-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>04</span><b>MAP CLEAR</b></div>
+        <p class="eyebrow">CHAPTER 02 · 변화와 관계</p>
+        <h2>묘목도 안전하고, 길도 열렸어!</h2>
+        <p>그래프의 증가·감소·일정 구간과 반복 주기를 읽으면 변화의 다음 모습을 예측할 수 있어.</p>
+        <div class="learning-summary nursery-summary"><span>찾은 변화</span><strong>가장 빠른 감소 20~30분 · 주기 20분 · 안전 시간 35~40분</strong></div>
+        <div class="complete-actions"><button id="map24-replay" class="secondary-button">다시 플레이</button><button id="map24-next" class="primary-button">2map5로 이동</button></div>
+      </div>
+    </section>
+
+    <nav id="map24-touch" class="touch-controls is-hidden"><div><button id="map24-left">←</button><button id="map24-right">→</button></div><button id="map24-interact" class="touch-interact">E</button></nav>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map24.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

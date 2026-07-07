@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WH&#51032; &#50724;&#45720; &#52404;&#54744;&#54032; &#47560;&#47924;&#47532;</title>
+    <link rel="stylesheet" href="./src/style.css" />
+    <script type="module" src="./src/access-control.mjs"></script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #9feeff 0%, #dff9ff 58%, #f9f0c7 100%);
+        font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+        color: #20304a;
+      }
+
+      .student-lock-page {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 28px;
+      }
+
+      .student-lock-card {
+        width: min(680px, 92vw);
+        border: 4px solid #263a5d;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 18px 0 rgba(38, 58, 93, 0.16), 0 28px 60px rgba(68, 107, 139, 0.24);
+        padding: 34px;
+        text-align: center;
+      }
+
+      .student-lock-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 18px;
+        border-radius: 999px;
+        background: #ffcf5f;
+        border: 3px solid #263a5d;
+        color: #263a5d;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        box-shadow: 0 6px 0 rgba(38, 58, 93, 0.18);
+      }
+
+      .student-lock-card h1 {
+        margin: 22px 0 12px;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        line-height: 1.1;
+      }
+
+      .student-lock-card p {
+        margin: 0 auto;
+        max-width: 520px;
+        font-size: 1.08rem;
+        line-height: 1.7;
+        color: #44536b;
+      }
+
+      .student-lock-summary {
+        margin: 24px auto 28px;
+        display: grid;
+        gap: 8px;
+        padding: 18px 20px;
+        max-width: 520px;
+        border-radius: 20px;
+        background: #edf9f2;
+        border: 3px dashed #6bb58b;
+      }
+
+      .student-lock-summary span { color: #4c7d64; font-weight: 800; }
+      .student-lock-summary strong { font-size: 1.16rem; color: #1f7150; }
+
+      .student-lock-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .student-lock-actions a { text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <main class="student-lock-page">
+      <section class="student-lock-card" aria-labelledby="lock-title">
+        <div class="student-lock-badge">DEMO CLEAR</div>
+        <h1 id="lock-title">&#50724;&#45720; &#52404;&#54744;&#54032; &#50756;&#47308;!</h1>
+        <p>Chapter 02 &#48320;&#54868;&#50752; &#44288;&#44228;&#44620;&#51648; &#47924;&#49324;&#55176; &#54644;&#44208;&#54664;&#50612;&#50836;. Chapter 03&#48512;&#53552;&#45716; &#50500;&#51649; &#49688;&#50629;&#50857;&#51004;&#47196; &#51104;&#44200; &#51080;&#51004;&#45768; &#50724;&#45720;&#51008; &#50668;&#44592;&#44620;&#51648; &#52404;&#54744;&#54644; &#48380; &#49688; &#51080;&#50612;&#50836;.</p>
+        <div class="student-lock-summary">
+          <span>&#50724;&#45720; &#48176;&#50868; &#51649;&#47924;&#49688;&#54617;</span>
+          <strong>&#48708;&#50752; &#48708;&#50984; &#183; &#48177;&#48516;&#50984; &#183; &#54364;&#50752; &#44536;&#47000;&#54532; &#183; &#50672;&#47549;&#48169;&#51221;&#49885;</strong>
+        </div>
+        <div class="student-lock-actions">
+          <a class="secondary-button" href="./index.html?student=1">&#52376;&#51020;&#51004;&#47196; &#46028;&#50500;&#44032;&#44592;</a>
+          <a class="primary-button" href="./2map5.html?student=1">2map5 &#45796;&#49884; &#48372;&#44592;</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

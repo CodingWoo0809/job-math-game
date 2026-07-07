@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#9be8ff"/>
+  <meta name="description" content="WH가 학교 현관 앞 자전거·인라인 보관소의 표와 그래프를 해석해 혼잡한 등교 동선을 해결하는 직무수학 게임"/>
+  <title>WH의 수학 탈출기 · 현관 앞 자료 해석 작전</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map44.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame interpretation-frame">
+    <canvas id="map44-canvas" aria-label="학교 현관 앞에서 WH가 표와 그래프를 해석해 보관소 혼잡을 해결하는 장면"></canvas>
+
+    <header id="map44-hud" class="hud is-hidden">
+      <div class="chapter-chip interpretation-chip"><span>CHAPTER 04 · MAP 04</span><strong>현관 앞 자료 해석 작전</strong></div>
+      <div class="objective-card"><span class="objective-label">현재 목표</span><strong id="map44-objective">생활안전부 선생님에게 현관 앞 상황을 물어보자.</strong></div>
+      <div class="interpretation-count-chip"><span>수집 정보</span><b id="interpretation-count">0 / 6</b></div>
+    </header>
+
+    <section id="map44-start" class="screen-overlay interpretation-start" aria-labelledby="map44-title">
+      <div class="start-card interpretation-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">SCHOOL ENTRANCE · DATA INTERPRETATION</p>
+          <h1 id="map44-title"><span>WH</span>와 현관 앞 자료 해석</h1>
+          <p class="map-title">자료와 가능성의 네 번째 학교 안 길</p>
+          <p class="start-description">WH가 드디어 학교 현관에 가까워졌다. 그런데 자전거와 인라인스케이트를 탄 학생들이 보관소 앞에서 뒤엉켜 현관 길이 막혀 있다. 생활안전부 선생님은 이미 만들어진 표와 그래프를 보고 안내 방송을 해야 하지만, 어떤 자료를 어떻게 해석해야 할지 망설이고 있다.</p>
+          <div class="interpretation-rules">
+            <span><b>이동</b> 키보드 화살표 방향키로 WH를 움직인다.</span>
+            <span><b>조사</b> 선생님, 학생들, 전광판, 표와 그래프 가까이에서 `Space Bar`를 누른다.</span>
+            <span><b>인벤토리</b> `I` 키로 WH의 직무수학 교과서와 수집한 해석 단서를 확인한다.</span>
+          </div>
+          <div class="start-actions">
+            <button id="map44-start-button" class="primary-button" type="button">현관 앞 조사 시작</button>
+            <a class="secondary-button back-link" href="./4map3.html">4map3 다시 보기</a>
+          </div>
+        </div>
+        <div class="interpretation-hero" aria-hidden="true">
+          <div class="school-door-hero">SCHOOL</div>
+          <div class="dashboard-hero">
+            <i></i><i></i><i></i><i></i>
+            <p>표와 그래프는 이미 있다. 이제 필요한 것은 정확한 해석이다.</p>
+          </div>
+          <p class="hero-caption">WH는 값을 새로 정리하는 것이 아니라, 이미 제시된 표·원그래프·막대그래프·꺾은선그래프에서 의미를 읽어 내야 한다.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside id="map44-control-guide" class="control-guide is-hidden" aria-label="조작 안내">
+      <span><b>↑ ↓ ← →</b> 이동</span>
+      <span><b>Space</b> 조사</span>
+      <span><b>I</b> 인벤토리</span>
+    </aside>
+
+    <div id="map44-interaction-prompt" class="interaction-prompt is-hidden" aria-live="polite">
+      <b id="map44-interaction-target">대상</b>
+      <span id="map44-interaction-text">Space Bar로 조사</span>
+    </div>
+
+    <section id="map44-dialogue" class="dialogue-box is-hidden" aria-live="polite" aria-labelledby="map44-dialogue-speaker">
+      <div>
+        <span id="map44-dialogue-speaker">대화</span>
+        <p id="map44-dialogue-text">대화 내용</p>
+      </div>
+      <button id="map44-dialogue-close" type="button" aria-label="대화 닫기">닫기</button>
+    </section>
+
+    <section id="map44-inventory" class="inventory-panel is-hidden" aria-labelledby="map44-inventory-title">
+      <div class="inventory-card">
+        <header>
+          <div>
+            <p class="eyebrow">WH INVENTORY · I</p>
+            <h2 id="map44-inventory-title">교과서와 수집한 해석 단서</h2>
+          </div>
+          <button id="map44-inventory-close" type="button" aria-label="인벤토리 닫기">닫기</button>
+        </header>
+        <div class="inventory-grid">
+          <article>
+            <h3>직무수학 교과서</h3>
+            <div id="map44-textbook-list" class="inventory-list"></div>
+          </article>
+          <article>
+            <h3>이번 맵에서 모은 정보</h3>
+            <div id="map44-notes-list" class="inventory-list"></div>
+          </article>
+        </div>
+        <p id="map44-inventory-hint" class="inventory-hint">교과서는 표와 그래프를 읽는 방법을 알려 주지만, 어떤 전광판을 어떻게 해석할지는 현장에서 직접 확인해야 한다.</p>
+      </div>
+    </section>
+
+    <section id="map44-puzzle" class="modal-layer is-hidden" aria-label="수집한 표와 그래프를 해석하여 현관 앞 동선을 해결하는 문제">
+      <div class="modal-card interpretation-card">
+        <header class="interpretation-header">
+          <div>
+            <p class="eyebrow">DASHBOARD READING · <span id="interpretation-rule">표와 그래프 해석</span></p>
+            <h2>현관 앞 혼잡 안내 방송 작성하기</h2>
+          </div>
+          <button id="interpretation-close" type="button" aria-label="해석창 닫기">닫기</button>
+        </header>
+
+        <div class="interpretation-workspace">
+          <article class="interpretation-visual-panel">
+            <div class="panel-heading"><span>학교 현관 자료 전광판</span><strong>수집 정보 기반</strong></div>
+            <div id="interpretation-summary" class="collected-summary">수집한 정보 요약</div>
+            <div id="interpretation-visual" class="interpretation-visual" aria-label="도착 인원 꺾은선그래프, 이동수단 원그래프, 보관소 빈자리 표, 동선 대기시간 막대그래프"></div>
+            <p class="interpretation-note">각 자료의 제목, 축, 범례, 단위를 먼저 확인한 뒤 가장 큰 값과 가장 작은 값을 해석하세요.</p>
+          </article>
+
+          <form id="interpretation-form" class="interpretation-form" novalidate>
+            <div class="answer-copy">
+              <span>INTERPRETATION LOG · 마지막 해석</span>
+              <strong>현관 앞 혼잡을 풀기 위해 표와 그래프에서 읽은 내용을 적으세요.</strong>
+              <small id="interpretation-help">막히면 `I` 키로 교과서와 수집 정보를 다시 확인할 수 있습니다.</small>
+            </div>
+            <div class="answer-row">
+              <aside id="interpretation-example" class="interpretation-example">
+                <b>생각해 볼 예시</b>
+                <p>막대그래프에서 막대가 가장 짧은 항목은 값이 가장 작은 항목이야. 대기시간 그래프라면 값이 작을수록 더 빨리 이동할 수 있다는 뜻이 된다.</p>
+              </aside>
+              <div class="answer-column">
+                <div id="interpretation-fields" class="interpretation-fields" aria-label="현관 앞 자료 해석 입력">
+                  <label class="interpretation-field">
+                    <span>꺾은선그래프에서 가장 붐비는 시간대</span>
+                    <span class="text-with-unit"><input name="busiestInterval" type="text" autocomplete="off" required placeholder="시간대 번호 또는 시간 구간"/></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>원그래프에서 가장 많은 보관 대상 이동수단</span>
+                    <span class="text-with-unit"><input name="topTransport" type="text" autocomplete="off" required placeholder="이동수단 이름"/></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>빈자리가 가장 많은 보관소의 빈자리 수</span>
+                    <span class="number-with-unit"><input name="emptySpots" type="number" min="0" step="1" inputmode="numeric" autocomplete="off" required/><b>자리</b></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>빈자리 표에서 안내하기 좋은 보관소</span>
+                    <span class="text-with-unit"><input name="bestStorage" type="text" autocomplete="off" required placeholder="보관소 이름 또는 구역"/></span>
+                  </label>
+                  <label class="interpretation-field">
+                    <span>막대그래프에서 평균 대기시간이 가장 짧은 동선</span>
+                    <span class="text-with-unit"><input name="shortestRoute" type="text" autocomplete="off" required placeholder="동선 이름"/></span>
+                  </label>
+                </div>
+                <button id="interpretation-submit" class="primary-button" type="submit">안내 방송 제출</button>
+                <p id="map44-feedback" class="interpretation-feedback" role="status">먼저 모은 정보가 충분한지 확인해 보세요.</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="map44-resolution" class="screen-overlay resolution-screen is-hidden" aria-labelledby="map44-resolution-title">
+      <div class="resolution-card">
+        <p class="eyebrow">ENTRANCE FLOW SIMULATION</p>
+        <h2 id="map44-resolution-title">후문 보관소 쪽으로 동선이 열리고 있어!</h2>
+        <p id="map44-resolution-text">해결 설명이 여기에 표시됩니다.</p>
+        <button id="map44-resolution-continue" class="primary-button" type="button">계속하기</button>
+      </div>
+    </section>
+
+    <section id="map44-complete" class="screen-overlay complete-screen interpretation-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>04</span><b>DASHBOARD CLEAR</b></div>
+        <p class="eyebrow">SCHOOL ENTRANCE THANKS WH</p>
+        <h2>표와 그래프가 안내 방송으로 바뀌었다!</h2>
+        <p>WH가 꺾은선그래프, 원그래프, 표, 막대그래프를 차례대로 해석하자 생활안전부 선생님은 자전거 학생들을 후문 보관소로 안내했다. 막혀 있던 현관 길이 풀리고, WH는 자료 해석이 실제 움직임을 바꾸는 힘이 있다는 것을 느낀다.</p>
+        <div class="learning-summary interpretation-summary-card">
+          <span>해결 결과</span>
+          <strong>이미 만들어진 표와 그래프를 해석해 혼잡 시간, 주요 이동수단, 최적 보관소와 동선을 찾아냈다.</strong>
+        </div>
+        <div class="complete-actions">
+          <button id="map44-replay" class="secondary-button" type="button">다시 도전</button>
+          <button id="map44-next" class="primary-button" type="button">다음 학교길로 이동</button>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map44.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

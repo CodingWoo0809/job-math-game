@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#0b0811"/>
+  <meta name="description" content="평면도형의 둘레와 넓이를 이용해 차폐 부품을 제작하고 격실을 탈출하는 직무수학 게임"/>
+  <title>WH의 수학 등굣길 — 차폐 절단 작업실</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map34.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame fabrication-frame">
+    <canvas id="map34-canvas" aria-label="평면 부품 절단 장치가 설치된 어두운 격실"></canvas>
+
+    <header id="map34-hud" class="hud is-hidden">
+      <div class="chapter-chip fabrication-chip"><span>CHAPTER 03 · MAP 04</span><strong>차폐 절단 작업실 A-04</strong></div>
+      <div class="objective-card"><span class="objective-label">탈출 조건</span><strong id="map34-objective">평면 부품 5개를 계산해 절단 장치를 통과시키자.</strong></div>
+      <div class="fabrication-count-chip"><span>부품 인증</span><b id="fabrication-count">0 / 5</b></div>
+    </header>
+
+    <section id="map34-start" class="screen-overlay fabrication-start" aria-labelledby="map34-title">
+      <div class="start-card fabrication-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">CONTAINMENT A-04 · FLAT CUTTING BAY</p>
+          <h1 id="map34-title"><span>WH의</span> 네 번째 격실</h1>
+          <p class="map-title">차폐 절단 작업실</p>
+          <p class="start-description">문 너머에는 레이저 커터와 반도체 검사대가 한 방에 섞인 듯한 작업실이 있었다. 실링 패널, 비상 단자, 삼각 지지대, 도넛형 차폐 패치, 원형 감시 렌즈용 차광칩을 정확한 크기로 제작해야 다음 문이 열린다. 이번 방의 열쇠는 평면도형의 둘레와 넓이다.</p>
+          <div class="fabrication-rules">
+            <span><b>사각 패널</b> 직사각형의 둘레와 넓이로 실링 부품을 만든다.</span>
+            <span><b>도넛 단면</b> 바깥 원과 안쪽 원의 넓이 차이를 이용한다.</span>
+            <span><b>삼각·웨이퍼</b> 정삼각형의 높이와 원 안의 정사각형 배치를 판독한다.</span>
+          </div>
+          <div class="start-actions"><button id="map34-start-button" class="primary-button" type="button">절단 장치 가동</button><a class="secondary-button back-link" href="./3map3.html">이전 격실</a></div>
+        </div>
+        <div class="fabrication-hero" aria-hidden="true">
+          <div class="cutter-arm"></div>
+          <div class="cutting-bed">
+            <svg viewBox="0 0 230 190">
+              <rect x="28" y="39" width="72" height="45" rx="4" fill="rgba(117,232,255,.16)" stroke="#75e8ff" stroke-width="4"/>
+              <path d="M73 117 L34 171 L112 171 Z" fill="rgba(255,198,99,.14)" stroke="#ffc663" stroke-width="4"/>
+              <circle cx="151" cy="77" r="45" class="hero-ring-outer"/>
+              <circle cx="151" cy="77" r="23" class="hero-ring-inner"/>
+              <circle cx="164" cy="145" r="37" class="hero-wafer"/>
+              <g class="hero-dies">
+                <rect x="140" y="121" width="16" height="16"/><rect x="156" y="121" width="16" height="16"/><rect x="172" y="121" width="16" height="16"/>
+                <rect x="140" y="137" width="16" height="16"/><rect x="156" y="137" width="16" height="16"/><rect x="172" y="137" width="16" height="16"/>
+                <rect x="140" y="153" width="16" height="16"/><rect x="156" y="153" width="16" height="16"/><rect x="172" y="153" width="16" height="16"/>
+              </g>
+            </svg>
+            <p>π는 그대로 두고 · 둘레와 넓이를 정확히 입력</p>
+          </div>
+          <p class="hero-caption">계산값이 틀리면 커터가 재료를 태워 버린다. 필요한 부품만 한 번에 잘라야 한다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="map34-puzzle" class="modal-layer is-hidden" aria-label="평면도형 둘레와 넓이 계산 문제">
+      <div class="modal-card fabrication-card">
+        <header class="fabrication-header">
+          <div><p class="eyebrow">CUT PLAN · <span id="fabrication-difficulty">기초</span></p><h2><span id="fabrication-number">1</span>번 부품 설계</h2></div>
+          <div id="fabrication-slots" class="fabrication-slots" aria-label="완성한 절단 부품"><i></i><i></i><i></i><i></i><i></i></div>
+        </header>
+
+        <div class="fabrication-workspace">
+          <article class="fabrication-visual-panel">
+            <div class="panel-heading"><span id="fabrication-title">부품 도면</span><strong>π는 그대로</strong></div>
+            <div id="fabrication-visual" class="fabrication-visual" aria-label="절단 부품 도면"></div>
+            <p id="fabrication-note" class="fabrication-note">도면의 조건을 이용해 필요한 값을 계산하세요.</p>
+          </article>
+
+          <form id="fabrication-form" class="fabrication-form" novalidate>
+            <div class="answer-copy">
+              <span>FABRICATION LOG · 주관식</span>
+              <strong>절단 장치에 넣을 값을 직접 입력하세요.</strong>
+              <small id="fabrication-help">π가 붙는 값은 π 앞의 수만 입력하세요.</small>
+            </div>
+            <div id="fabrication-fields" class="fabrication-fields" aria-label="계산값 입력"></div>
+            <button id="fabrication-submit" class="primary-button" type="submit">부품 절단 승인</button>
+            <p id="map34-feedback" class="fabrication-feedback" role="status">둘레와 넓이를 구분해서 계산해 보세요.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="map34-complete" class="screen-overlay complete-screen fabrication-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>04</span><b>FABRICATION COMPLETE</b></div>
+        <p class="eyebrow">FIVE FLAT PARTS VERIFIED</p>
+        <h2>절단된 차폐 부품이 레이저 격자를 닫았어!</h2>
+        <p>직사각형 실링 패널, 전선 단면, 정삼각형 지지대, 도넛형 패치, 원형 렌즈 위의 정사각형 칩은 모두 직무 현장에서 만날 수 있는 평면도형 문제다. WH는 둘레와 넓이를 구분해 필요한 부품을 제작하고 마지막 입체 격실로 향했다.</p>
+        <div class="learning-summary fabrication-summary"><span>인증 결과</span><strong>직사각형, 원, 정삼각형, 도넛형 평면도형, 원 안의 정사각형 배치 계산 성공</strong></div>
+        <div class="complete-actions"><button id="map34-replay" class="secondary-button" type="button">다시 도전</button><button id="map34-next" class="primary-button" type="button">3map5 격실로 이동</button></div>
+      </div>
+    </section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map34.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

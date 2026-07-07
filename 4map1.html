@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#9be8ff"/>
+  <meta name="description" content="WH를 직접 조종해 공원 사진 촬영 정보를 모으고 경우의 수를 계산해 해결하는 직무수학 게임"/>
+  <title>WH의 수학 탈출기 · 공원 사진 촬영 줄 세우기</title>
+  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./map41.css"/>
+</head>
+<body>
+<main class="app-shell">
+  <section class="game-frame counting-frame">
+    <canvas id="map41-canvas" aria-label="햇빛 드는 공원에서 WH가 선생님과 유치원생들을 만나 사진 촬영 정보를 조사하는 장면"></canvas>
+
+    <header id="map41-hud" class="hud is-hidden">
+      <div class="chapter-chip counting-chip"><span>CHAPTER 04 · MAP 01</span><strong>공원 사진 촬영 도우미</strong></div>
+      <div class="objective-card"><span class="objective-label">현재 목표</span><strong id="map41-objective">선생님에게 사진 촬영 조건을 물어보자.</strong></div>
+      <div class="counting-count-chip"><span>수집 정보</span><b id="counting-count">0 / 8</b></div>
+    </header>
+
+    <section id="map41-start" class="screen-overlay counting-start" aria-labelledby="map41-title">
+      <div class="start-card counting-start-card">
+        <div class="start-copy">
+          <p class="eyebrow">SCHOOL PARK ROAD · COUNTING CASES</p>
+          <h1 id="map41-title"><span>WH</span>와 사진 촬영 줄 세우기</h1>
+          <p class="map-title">자료와 가능성의 첫 번째 공원길</p>
+          <p class="start-description">학교가 가까워지자 길이 환해졌다. 공원 한쪽에서 유치원 선생님이 사진 촬영 순서를 고민하고 있다. WH는 그냥 문제를 받는 대신, 직접 움직이며 조건을 듣고 아이들에게 말을 걸어 필요한 정보를 모아야 한다.</p>
+          <div class="counting-rules">
+            <span><b>이동</b> 키보드 화살표 방향키로 WH를 움직인다.</span>
+            <span><b>조사</b> NPC나 사물 가까이에서 `Space Bar`를 눌러 대화하거나 확인한다.</span>
+            <span><b>인벤토리</b> `I` 키로 WH의 직무수학 교과서와 수집한 정보를 확인한다.</span>
+          </div>
+          <div class="start-actions">
+            <button id="map41-start-button" class="primary-button" type="button">공원길 조사 시작</button>
+            <a class="secondary-button back-link" href="./chapter4.html">챕터 4 입구</a>
+          </div>
+        </div>
+        <div class="counting-hero" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="photo-board">
+            <div class="photo-row">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <p>조건은 선생님에게, 인원 정보는 아이들에게 직접 확인!</p>
+          </div>
+          <p class="hero-caption">문제는 아직 완성되지 않았다. WH가 맵 안에서 정보를 모아야 비로소 계산할 수 있다.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside id="control-guide" class="control-guide is-hidden" aria-label="조작 안내">
+      <span><b>↑ ↓ ← →</b> 이동</span>
+      <span><b>Space</b> 조사</span>
+      <span><b>I</b> 인벤토리</span>
+    </aside>
+
+    <div id="interaction-prompt" class="interaction-prompt is-hidden" aria-live="polite">
+      <b id="interaction-target">대상</b>
+      <span id="interaction-text">Space Bar로 조사</span>
+    </div>
+
+    <section id="map41-dialogue" class="dialogue-box is-hidden" aria-live="polite" aria-labelledby="dialogue-speaker">
+      <div>
+        <span id="dialogue-speaker">대화</span>
+        <p id="dialogue-text">대화 내용</p>
+      </div>
+      <button id="dialogue-close" type="button" aria-label="대화 닫기">닫기</button>
+    </section>
+
+    <section id="map41-inventory" class="inventory-panel is-hidden" aria-labelledby="inventory-title">
+      <div class="inventory-card">
+        <header>
+          <div>
+            <p class="eyebrow">WH INVENTORY · I</p>
+            <h2 id="inventory-title">교과서와 수집 정보</h2>
+          </div>
+          <button id="inventory-close" type="button" aria-label="인벤토리 닫기">닫기</button>
+        </header>
+        <div class="inventory-grid">
+          <article>
+            <h3>직무수학 교과서</h3>
+            <div id="textbook-list" class="inventory-list"></div>
+          </article>
+          <article>
+            <h3>이번 맵에서 모은 정보</h3>
+            <div id="notes-list" class="inventory-list"></div>
+          </article>
+        </div>
+        <p id="inventory-hint" class="inventory-hint">교과서는 개념과 활용 방법을 알려 주지만, 사진 조건과 인원 정보는 직접 조사해야 한다.</p>
+      </div>
+    </section>
+
+    <section id="map41-puzzle" class="modal-layer is-hidden" aria-label="수집한 정보로 해결하는 유치원생 사진 촬영 경우의 수 문제">
+      <div class="modal-card counting-card">
+        <header class="counting-header">
+          <div>
+            <p class="eyebrow">PHOTO LINEUP · <span id="counting-rule">곱의법칙</span></p>
+            <h2><span id="counting-number">1</span>번째 촬영 계획</h2>
+          </div>
+          <div class="counting-header-actions">
+            <div id="counting-slots" class="counting-slots" aria-label="해결한 경우의 수 문제"><i></i><i></i></div>
+            <button id="counting-close" type="button" aria-label="계산창 닫기">닫기</button>
+          </div>
+        </header>
+
+        <div class="counting-workspace">
+          <article class="counting-visual-panel">
+            <div class="panel-heading"><span id="counting-title">사진 촬영 조건</span><strong>수집 정보 기반</strong></div>
+            <div id="collected-summary" class="collected-summary">수집한 정보 요약</div>
+            <div id="counting-visual" class="counting-visual" aria-label="아이들의 줄 세우기 조건 그림"></div>
+            <p id="counting-note" class="counting-note">조건에 맞게 한 줄로 서는 경우의 수를 구하세요.</p>
+          </article>
+
+          <form id="counting-form" class="counting-form" novalidate>
+            <div class="answer-copy">
+              <span>COUNTING LOG · 마지막 정리</span>
+              <strong>수집한 정보를 연결해 경우의 수를 적으세요.</strong>
+              <small id="counting-help">막히면 `I` 키로 교과서와 수집 정보를 다시 확인할 수 있습니다.</small>
+            </div>
+            <div class="answer-row">
+              <aside id="counting-example" class="counting-example">
+                <b>생각해 볼 예시</b>
+                <p>예시 상황이 여기에 표시됩니다.</p>
+              </aside>
+              <div class="answer-column">
+                <div id="counting-fields" class="counting-fields" aria-label="경우의 수 입력"></div>
+                <button id="counting-submit" class="primary-button" type="submit">촬영 계획 제출</button>
+                <p id="map41-feedback" class="counting-feedback" role="status">먼저 모은 정보가 충분한지 확인해 보세요.</p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="map41-resolution" class="screen-overlay resolution-screen is-hidden" aria-labelledby="resolution-title">
+      <div class="resolution-card">
+        <p class="eyebrow">PHOTO LINEUP SIMULATION</p>
+        <h2 id="resolution-title">촬영 줄이 실제로 바뀌고 있어!</h2>
+        <p id="resolution-text">풀이 설명이 여기에 표시됩니다.</p>
+        <button id="resolution-continue" class="primary-button" type="button">계속하기</button>
+      </div>
+    </section>
+
+    <section id="map41-complete" class="screen-overlay complete-screen counting-complete is-hidden">
+      <div class="complete-card">
+        <div class="completion-badge"><span>01</span><b>PHOTO SHOOT COMPLETE</b></div>
+        <p class="eyebrow">KINDERGARTEN THANKS WH</p>
+        <h2>사진 촬영 줄이 깔끔하게 정리됐다!</h2>
+        <p>선생님은 “덕분에 촬영 순서를 정확히 설명할 수 있겠어!”라며 고마워했다. 유치원생들도 WH에게 손을 흔들었다. WH는 경우의 수가 단순한 숫자 놀이가 아니라 실제 계획을 세우는 데 쓰인다는 걸 느끼며 밝은 공원길을 더 힘차게 걸어간다.</p>
+        <div class="learning-summary counting-summary">
+          <span>해결 결과</span>
+          <strong>직접 수집한 조건과 인원 정보를 곱의법칙과 순열로 연결해 촬영 계획 해결</strong>
+        </div>
+        <div class="complete-actions">
+          <button id="map41-replay" class="secondary-button" type="button">다시 도전</button>
+          <button id="map41-next" class="primary-button" type="button">다음 길로 이동</button>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+<script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map41.js"></script>
+<script type="module" src="./src/dev-tools.mjs"></script>
+</body>
+</html>

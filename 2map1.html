@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#315d46" />
+    <meta name="description" content="몸무게의 비로 바나나를 나누고 혼합비로 묘목 영양액을 만드는 직무수학 어드벤처" />
+    <title>WH의 수학 등굣길 — 바나나 평화 협정</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./map21.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-frame forest-frame" aria-label="챕터 2 첫 번째 맵">
+        <canvas id="map21-canvas" tabindex="0" aria-label="WH가 생태숲을 탐색하는 2D 게임입니다. 방향키 또는 A와 D로 이동하고 E로 상호작용합니다."></canvas>
+
+        <header id="map21-hud" class="hud is-hidden">
+          <div class="chapter-chip forest-chip"><span>CHAPTER 02 · MAP 01</span><strong>푸른솔 생태숲</strong></div>
+          <div class="objective-card" aria-live="polite"><span class="objective-label">지금 할 일</span><strong id="map21-objective">야생동물 관리사에게 상황을 물어보자.</strong></div>
+          <div class="scene-progress" aria-label="해결한 장면"><b id="scene-progress">0</b><span>/ 2</span></div>
+        </header>
+
+        <div id="map21-prompt" class="interaction-prompt is-hidden"><span class="key-cap">E</span><span id="map21-prompt-text">살펴보기</span></div>
+        <div id="map21-toast" class="toast is-hidden" role="status" aria-live="polite"></div>
+
+        <section id="map21-start" class="screen-overlay forest-start" aria-labelledby="map21-title">
+          <div class="start-card forest-start-card">
+            <div class="start-copy">
+              <p class="eyebrow">직무수학 어드벤처 · CHAPTER 02</p>
+              <h1 id="map21-title"><span>WH의</span> 수학 등굣길</h1>
+              <p class="map-title">바나나 평화 협정</p>
+              <p class="start-description">버스에서 내리자 도심 대신 푸른 생태숲이 펼쳐졌다. 그런데 과일 트럭이 흘린 바나나를 두고 원숭이 세 마리가 길 한복판에서 싸우고 있다.</p>
+              <div class="start-actions">
+                <button id="map21-start-button" class="primary-button" type="button">숲길로 들어가기 <span>→</span></button>
+                <a class="secondary-button back-link" href="./chapter2.html">챕터 입구</a>
+              </div>
+            </div>
+            <div class="forest-hero" aria-hidden="true">
+              <div class="forest-sun"></div><div class="hero-hill one"></div><div class="hero-hill two"></div>
+              <div class="hero-tree left"></div><div class="hero-tree right"></div>
+              <div class="hero-bananas">🍌<span>12:18:30</span></div>
+              <div class="forest-caption"><span>오늘의 관계</span><strong>비례해서 나누기 · 정해진 비로 섞기</strong></div>
+            </div>
+          </div>
+          <div class="control-strip"><span><kbd>A</kbd><kbd>D</kbd> 이동</span><span><kbd>E</kbd> 상호작용</span><span><kbd>Esc</kbd> 닫기</span></div>
+        </section>
+
+        <section id="map21-dialogue" class="dialogue-panel is-hidden" aria-live="polite">
+          <div id="map21-avatar" class="speaker-avatar">WH</div>
+          <div class="dialogue-copy"><span id="map21-speaker" class="speaker-name">WH</span><p id="map21-dialogue-text"></p></div>
+          <button id="map21-dialogue-next" class="dialogue-next" type="button">계속 <span>›</span></button>
+        </section>
+
+        <section id="monkey-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="monkey-title">
+          <div class="modal-card ratio-card">
+            <header class="modal-header">
+              <div><p class="eyebrow">WILDLIFE FEEDING</p><h2 id="monkey-title">몸무게에 비례해 바나나 나누기</h2></div>
+              <button id="monkey-close" class="close-button" type="button">×</button>
+            </header>
+            <div class="monkey-layout">
+              <div class="monkey-info">
+                <p>이동식 체중계의 기록을 보고 세 원숭이의 몸무게에 비례해 바나나 30개를 나누자.</p>
+                <div class="monkey-cards">
+                  <article><span>원숭이 A</span><b>12 kg</b><i>작은 체구</i></article>
+                  <article><span>원숭이 B</span><b>18 kg</b><i>중간 체구</i></article>
+                  <article><span>원숭이 C</span><b>30 kg</b><i>큰 체구</i></article>
+                </div>
+                <div class="banana-total"><span>나눌 바나나</span><strong>30개</strong></div>
+              </div>
+              <form id="monkey-form" class="ratio-form" novalidate>
+                <fieldset><legend>① 몸무게를 가장 간단한 자연수의 비로 나타내세요.</legend><div class="ratio-inputs"><input name="ratioA" inputmode="numeric" aria-label="A의 비" /><b>:</b><input name="ratioB" inputmode="numeric" aria-label="B의 비" /><b>:</b><input name="ratioC" inputmode="numeric" aria-label="C의 비" /></div></fieldset>
+                <fieldset><legend>② 비례해서 나눌 바나나 수를 입력하세요.</legend><div class="share-inputs"><label>A<input name="bananaA" inputmode="numeric" /><span>개</span></label><label>B<input name="bananaB" inputmode="numeric" /><span>개</span></label><label>C<input name="bananaC" inputmode="numeric" /><span>개</span></label></div></fieldset>
+                <p id="monkey-feedback" class="form-feedback" aria-live="polite"></p>
+                <div class="ratio-actions"><button id="monkey-hint" class="secondary-button" type="button">힌트</button><button class="primary-button" type="submit">바나나 바구니 놓기</button></div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section id="mixture-panel" class="modal-layer is-hidden" role="dialog" aria-modal="true" aria-labelledby="mixture-title">
+          <div class="modal-card mixture-card">
+            <header class="modal-header"><div><p class="eyebrow">FOREST RESTORATION</p><h2 id="mixture-title">묘목 영양액 혼합</h2></div><button id="mixture-close" class="close-button" type="button">×</button></header>
+            <div class="mixture-layout">
+              <div class="tank-visual" aria-hidden="true"><div class="tank"><i id="tank-fill"></i><span>24 L</span></div><div class="valves"><b>원액</b><b>물</b></div></div>
+              <form id="mixture-form" class="mixture-form" novalidate>
+                <p>산림 복원 작업에 필요한 영양액은 <strong>원액과 물의 비가 1:5</strong>이고, 전체 양은 <strong>24 L</strong>야.</p>
+                <h3>원액과 물을 각각 몇 L 넣어야 할까요?</h3>
+                <div class="mixture-inputs"><label>영양 원액<div class="money-input"><input name="concentrate" inputmode="numeric" /><span>L</span></div></label><label>물<div class="money-input"><input name="water" inputmode="numeric" /><span>L</span></div></label></div>
+                <p id="mixture-feedback" class="form-feedback" aria-live="polite"></p>
+                <div class="ratio-actions"><button id="mixture-hint" class="secondary-button" type="button">힌트</button><button class="primary-button" type="submit">급수 카트에 혼합</button></div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section id="map21-complete" class="screen-overlay complete-screen forest-complete is-hidden" aria-labelledby="map21-complete-title">
+          <div class="complete-card"><div class="completion-badge"><span>01</span><b>MAP CLEAR</b></div><p class="eyebrow">CHAPTER 02 · 변화와 관계</p><h2 id="map21-complete-title">숲길에 평화가 돌아왔어!</h2><p>비는 공정하게 나눌 때도, 알맞게 섞을 때도 사용할 수 있어.</p><div class="learning-summary forest-summary"><span>오늘 사용한 수학</span><strong>몸무게의 비 2:3:5 · 혼합비 1:5</strong></div><div class="complete-actions"><button id="map21-replay" class="secondary-button" type="button">다시 플레이</button><button id="map21-next" class="primary-button" type="button">2map2로 이동</button></div></div>
+        </section>
+
+        <nav id="map21-touch" class="touch-controls is-hidden" aria-label="화면 조작"><div><button id="map21-left" type="button">←</button><button id="map21-right" type="button">→</button></div><button id="map21-interact" class="touch-interact" type="button">E</button></nav>
+      </section>
+    </main>
+        <script type="module" src="./src/access-control.mjs"></script>
+<script type="module" src="./src/map21.js"></script>
+    <script type="module" src="./src/dev-tools.mjs"></script>
+  </body>
+</html>
