@@ -816,3 +816,7 @@ body {
     width: calc(100% - 28px);
   }
 }
+
+
+/* Asset-backed start preview. */
+.data-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/characters/sprites/wh.png") 33% 88%/auto 138px no-repeat,url("./assets/characters/sprites/math_teacher.png") 55% 84%/auto 128px no-repeat,url("./assets/props/sprites/sales_summary_easel.png") 77% 84%/auto 124px no-repeat,url("./assets/props/sprites/bench.png") 90% 91%/auto 118px no-repeat}.data-hero .hero-caption{z-index:6}

@@ -18,7 +18,7 @@ const makeState = () => ({ started:false, playerX:180, direction:1, cameraX:0, r
 let state = makeState();
 let viewWidth=1280, viewHeight=720, groundY=540, toastTimer=null;
 const keys={left:false,right:false};
-const world={width:2920, monkeyBarrier:1280, exitBarrier:2470, interactions:[{id:"ranger",x:500,radius:85,label:"야생동물 관리사와 대화"},{id:"monkeys",x:1010,radius:115,label:"원숭이와 바나나 살펴보기"},{id:"worker",x:1600,radius:85,label:"산림 복원 작업자와 대화"},{id:"mixer",x:1990,radius:90,label:"영양액 혼합 장치 사용"}]};
+const world={width:2920, monkeyBarrier:1280, exitBarrier:2470, interactions:[{id:"ranger",x:500,radius:85,label:"야생동물 관리사와 대화"},{id:"monkeys",x:1010,radius:115,label:"원숭이와 바나나 살펴보기"},{id:"worker",x:1600,radius:85,label:"산림 복원 작업자와 대화"},{id:"mixer",x:2180,radius:110,label:"영양액 혼합 장치 사용"}]};
 
 resize(); assetManager.loadAll().catch((error)=>console.warn(error)); requestAnimationFrame(loop);
 ui.startButton.addEventListener("click",startGame); ui.dialogueNext.addEventListener("click",advanceDialogue);
@@ -85,8 +85,9 @@ function drawSignLabel(x,y,text){
   ctx.restore();
 }
 function drawTree(x,scale){const px=sx(x);if(px<-100||px>viewWidth+100)return;if(assetManager.draw(ctx,"props.tree",{x:px,y:groundY+2,height:250*scale}))return;ctx.save();ctx.translate(px,groundY);ctx.scale(scale,scale);ctx.fillStyle="#735239";ctx.fillRect(-11,-180,22,180);ctx.fillStyle="#477b50";for(const [cx,cy,r] of [[0,-205,58],[-43,-170,42],[45,-172,46],[0,-252,40]]){ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill()}ctx.restore();}
-function drawPeople(){drawWildlifeKeeper(500);if(state.monkeySolved)drawPerson(1600,"#4f8056");}
+function drawPeople(){drawWildlifeKeeper(500);if(state.monkeySolved)drawForestRestorationWorker(1600);}
 function drawWildlifeKeeper(x){const px=sx(x);if(px<-70||px>viewWidth+70)return;if(assetManager.draw(ctx,"characters.wildlifeKeeper",{x:px,y:groundY+3,height:178,anchorX:.5,anchorY:1}))return;drawPerson(x,"#8a6547");}
+function drawForestRestorationWorker(x){const px=sx(x);if(px<-80||px>viewWidth+80)return;if(assetManager.draw(ctx,"characters.forestRestorationWorker",{x:px,y:groundY+3,height:178,anchorX:.5,anchorY:1}))return;drawPerson(x,"#4f8056");}
 function drawPerson(x,color){const px=sx(x);if(px<-60||px>viewWidth+60)return;ctx.save();ctx.translate(px,groundY);ctx.strokeStyle="#303c3b";ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(-8,-44);ctx.lineTo(-12,-3);ctx.moveTo(8,-44);ctx.lineTo(13,-3);ctx.stroke();ctx.fillStyle=color;roundRect(ctx,-28,-108,56,68,15);ctx.fill();ctx.fillStyle="#ebc0a6";ctx.beginPath();ctx.arc(0,-136,27,0,Math.PI*2);ctx.fill();ctx.fillStyle="#3d332d";ctx.beginPath();ctx.arc(0,-143,28,Math.PI,Math.PI*2);ctx.fill();ctx.restore();}
 function drawMonkeys(){const xs=[900,1020,1140],sizes=[.82,1,1.18];if(state.monkeySolved){ctx.strokeStyle="#735239";ctx.lineWidth=18;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(sx(820),groundY-145);ctx.quadraticCurveTo(sx(1030),groundY-205,sx(1230),groundY-170);ctx.stroke();}for(let i=0;i<3;i++){const px=sx(xs[i]);if(px<-90||px>viewWidth+90)continue;const y=state.monkeySolved?groundY-115-i*18:groundY;ctx.fillStyle="rgba(30,40,50,.16)";ctx.beginPath();ctx.ellipse(px,y+4,26*sizes[i],8*sizes[i],0,0,Math.PI*2);ctx.fill();if(assetManager.draw(ctx,"characters.monkey",{x:px,y:y+4,height:104*sizes[i]}))continue;ctx.save();ctx.translate(px,y);ctx.scale(sizes[i],sizes[i]);ctx.fillStyle="#765039";ctx.beginPath();ctx.arc(0,-85,32,0,Math.PI*2);ctx.fill();roundRect(ctx,-27,-60,54,58,20);ctx.fill();ctx.strokeStyle="#765039";ctx.lineWidth=10;ctx.beginPath();ctx.arc(26,-48,35,-1.2,1.6);ctx.stroke();ctx.fillStyle="#e4b48c";ctx.beginPath();ctx.arc(0,-82,21,0,Math.PI*2);ctx.fill();ctx.fillStyle="#2f2a28";ctx.beginPath();ctx.arc(-7,-86,3,0,Math.PI*2);ctx.arc(7,-86,3,0,Math.PI*2);ctx.fill();ctx.restore();}if(!state.monkeySolved)drawBananaPile(1020);}
 function drawBananaPile(centerX){
@@ -99,9 +100,30 @@ function drawBananaPile(centerX){
     ctx.fillStyle="#f0c84d";ctx.beginPath();ctx.ellipse(x+item.dx,groundY-9+item.dy,12,5,-.3,0,Math.PI*2);ctx.fill();
   }
 }
-function drawRestoration(){const x=sx(1860);if(x>-400&&x<viewWidth+500){for(let i=0;i<6;i++){const px=x+i*90;const h=(state.mixtureSolved?128:108)+(i%2)*10;if(assetManager.draw(ctx,"props.tree",{x:px,y:groundY+5,height:h,anchorX:.5,anchorY:1}))continue;ctx.strokeStyle="#4e7c4c";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(px,groundY);ctx.lineTo(px,groundY-62);ctx.stroke();ctx.fillStyle=state.mixtureSolved?"#79aa5a":"#9a9d62";ctx.beginPath();ctx.arc(px-13,groundY-52,18,0,Math.PI*2);ctx.arc(px+14,groundY-70,19,0,Math.PI*2);ctx.fill();}}
-  const cart=sx(2180+state.cartOffset);ctx.fillStyle="#315d46";roundRect(ctx,cart-90,groundY-125,180,100,14);ctx.fill();ctx.fillStyle="#b7d670";ctx.beginPath();ctx.arc(cart-45,groundY-20,24,0,Math.PI*2);ctx.arc(cart+55,groundY-20,24,0,Math.PI*2);ctx.fill();ctx.fillStyle="#eaf4dd";ctx.font="900 11px system-ui";ctx.textAlign="center";ctx.fillText(state.mixtureSolved?"SUPPLY":"MIX READY",cart,groundY-70);}
-function drawMarkers(){if(!state.rangerSpoken)drawMarker(500,state.nearby==="ranger");else if(!state.monkeySolved)drawMarker(1010,state.nearby==="monkeys");else if(!state.workerSpoken)drawMarker(1600,state.nearby==="worker");else if(!state.mixtureSolved)drawMarker(1990,state.nearby==="mixer");}
+function drawRestoration(){
+  const grove=sx(1860);
+  if(grove>-400&&grove<viewWidth+500){
+    for(let i=0;i<6;i++){
+      const px=grove+i*90;
+      const h=(state.mixtureSolved?128:108)+(i%2)*10;
+      if(assetManager.draw(ctx,"props.tree",{x:px,y:groundY+5,height:h,anchorX:.5,anchorY:1}))continue;
+      ctx.strokeStyle="#4e7c4c";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(px,groundY);ctx.lineTo(px,groundY-62);ctx.stroke();
+      ctx.fillStyle=state.mixtureSolved?"#79aa5a":"#9a9d62";ctx.beginPath();ctx.arc(px-13,groundY-52,18,0,Math.PI*2);ctx.arc(px+14,groundY-70,19,0,Math.PI*2);ctx.fill();
+    }
+  }
+  const machine=sx(2180+state.cartOffset);
+  if(machine>-190&&machine<viewWidth+190){
+    if(!assetManager.draw(ctx,"props.nutrientMixingMachine",{x:machine,y:groundY+10,height:220,anchorX:.5,anchorY:1})){
+      ctx.fillStyle="#e6f5d6";roundRect(ctx,machine-70,groundY-170,140,132,18);ctx.fill();
+      ctx.fillStyle="#6fb86b";ctx.fillRect(machine-45,groundY-145,90,54);
+      ctx.fillStyle="#315d46";ctx.font="900 11px system-ui";ctx.textAlign="center";ctx.fillText("MIX",machine,groundY-108);
+    }
+    if(state.mixtureSolved){
+      ctx.fillStyle="rgba(129,197,104,.28)";ctx.beginPath();ctx.arc(machine,groundY-96,62,0,Math.PI*2);ctx.fill();
+    }
+  }
+}
+function drawMarkers(){if(!state.rangerSpoken)drawMarker(500,state.nearby==="ranger");else if(!state.monkeySolved)drawMarker(1010,state.nearby==="monkeys");else if(!state.workerSpoken)drawMarker(1600,state.nearby==="worker");else if(!state.mixtureSolved)drawMarker(2180,state.nearby==="mixer");}
 function drawMarker(x,active){const px=sx(x),bob=Math.sin(performance.now()/260)*4;if(px<-40||px>viewWidth+40)return;ctx.fillStyle=active?"#e9a23c":"#83ba67";ctx.beginPath();ctx.arc(px,groundY-190+bob,active?16:13,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.font="950 18px system-ui";ctx.textAlign="center";ctx.fillText(active?"E":"!",px,groundY-183+bob);}
 function drawWH(){const x=sx(state.playerX),moving=!paused()&&(keys.left||keys.right),s=moving?Math.sin(state.walkTime)*11:0,b=moving?Math.sin(state.walkTime*2)*2:0;if(assetManager.has("characters.wh")){ctx.fillStyle="rgba(24,35,48,.2)";ctx.beginPath();ctx.ellipse(x,groundY+5,36,10,0,0,Math.PI*2);ctx.fill();assetManager.draw(ctx,"characters.wh",{x,y:groundY+3+b,height:176,flipX:state.direction===-1});return;}ctx.save();ctx.translate(x,groundY-2+b);ctx.scale(state.direction,1);ctx.strokeStyle="#1b2941";ctx.lineWidth=9;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(-8,-48);ctx.lineTo(-12-s*.55,-5);ctx.moveTo(9,-48);ctx.lineTo(14+s*.55,-5);ctx.stroke();ctx.fillStyle="#1b8f88";roundRect(ctx,-27,-119,58,78,20);ctx.fill();ctx.fillStyle="#fff";ctx.font="950 12px system-ui";ctx.textAlign="center";ctx.save();ctx.scale(state.direction,1);ctx.fillText("WH",2*state.direction,-76);ctx.restore();ctx.fillStyle="#efc3a9";ctx.beginPath();ctx.arc(2,-151,35,0,Math.PI*2);ctx.fill();ctx.fillStyle="#17223b";ctx.beginPath();ctx.arc(2,-162,36,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";for(const ex of [2,21]){ctx.beginPath();ctx.ellipse(ex,-151,8,10,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#126b68";ctx.beginPath();ctx.arc(ex+2,-150,5,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";}ctx.restore();}
 function roundRect(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}

@@ -842,3 +842,11 @@ body {
     width: calc(100% - 28px);
   }
 }
+
+
+/* Asset-backed start preview. */
+.counting-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/characters/sprites/math_teacher.png") 18% 83%/auto 130px no-repeat,url("./assets/characters/sprites/wh.png") 39% 88%/auto 138px no-repeat,url("./assets/characters/sprites/elementary_girl.png") 59% 87%/auto 118px no-repeat,url("./assets/characters/sprites/elementary_boy.png") 72% 87%/auto 118px no-repeat,url("./assets/props/sprites/bench.png") 90% 91%/auto 120px no-repeat}.counting-hero .hero-caption{z-index:6}
+
+
+/* Asset-backed 4map1 park renewal. */
+.counting-hero::after{background:url("./assets/buildings/sprites/school_building.png") 50% 76%/auto 360px no-repeat,url("./assets/characters/sprites/math_teacher.png") 16% 84%/auto 126px no-repeat,url("./assets/characters/sprites/wh.png") 35% 90%/auto 138px no-repeat,url("./assets/characters/sprites/bicycle_student.png") 74% 91%/auto 128px no-repeat,url("./assets/characters/sprites/inline_skater_student.png") 88% 90%/auto 128px no-repeat,url("./assets/characters/sprites/elementary_girl.png") 58% 88%/auto 112px no-repeat,url("./assets/characters/sprites/elementary_boy.png") 66% 88%/auto 112px no-repeat,url("./assets/props/sprites/bench.png") 94% 93%/auto 112px no-repeat}

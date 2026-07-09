@@ -209,3 +209,22 @@
   .chapter-bridge { grid-template-columns:1fr; }
   .chapter-bridge b { transform:rotate(90deg); }
 }
+
+
+/* Asset-backed start preview. */
+.depot-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    url("./assets/characters/sprites/operations_technician.png") 79% 81% / auto 118px no-repeat,
+    url("./assets/characters/sprites/wh.png") 57% 86% / auto 138px no-repeat,
+    url("./assets/vehicles/sprites/school_town_shuttle_bus.png") 20% 83% / auto 220px no-repeat,
+    url("./assets/buildings/sprites/shuttle_bus_transfer_center.png") 88% 76% / auto 205px no-repeat,
+    url("./assets/props/sprites/route_calibration_kiosk.png") 48% 82% / auto 108px no-repeat;
+}
+
+.depot-hero .depot-caption { z-index: 6; }
+.depot-hero .hero-shuttle { opacity: .18; }

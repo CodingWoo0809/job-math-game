@@ -1235,20 +1235,19 @@ function drawTruck() {
 }
 
 function drawBarrier() {
-  if (state.pathOpen) return;
   const x = worldX(world.barrierX);
-  if (x < -100 || x > viewWidth + 100) return;
-  const openProgress = state.truckDeparting ? Math.min(1, state.truckOffset / 760) : 0;
-  if (assetManager.has("props.lockedIronGate")) {
-    assetManager.draw(ctx, "props.lockedIronGate", {
+  if (x < -120 || x > viewWidth + 120) return;
+  const openProgress = state.truckDeparting ? Math.min(1, state.truckOffset / 760) : state.pathOpen ? 1 : 0;
+  const gateKey = openProgress > 0.35 ? "props.openIronGate" : "props.closedIronGate";
+  if (assetManager.has(gateKey)) {
+    assetManager.draw(ctx, gateKey, {
       x,
-      y: groundY + 8 - openProgress * 180,
-      height: 232,
-      alpha: 1 - openProgress * 0.42
+      y: groundY + 8,
+      height: 232
     });
-    if (openProgress > 0.12) {
-      drawTinySparkle(x - 58, groundY - 190 - openProgress * 150, 7, ART.gold);
-      drawTinySparkle(x + 54, groundY - 156 - openProgress * 145, 5, "#fffdf4");
+    if (openProgress > 0.12 && openProgress < 1) {
+      drawTinySparkle(x - 58, groundY - 190, 7, ART.gold);
+      drawTinySparkle(x + 54, groundY - 156, 5, "#fffdf4");
     }
     return;
   }
@@ -1291,10 +1290,10 @@ function drawNPCs() {
     }
   }
   if (!state.pathOpen && !state.truckDeparting) {
-    const driverX = worldX(1870);
+    const driverX = worldX(1930);
     if (driverX > -80 && driverX < viewWidth + 80) {
       const drawn = assetManager.draw(ctx, "characters.truckDriver", { x: driverX, y: groundY + 3, height: 172 });
-      if (!drawn) drawPerson(1870, "#5d9cff", "#24364a", 1.02, true);
+      if (!drawn) drawPerson(1930, "#5d9cff", "#24364a", 1.02, true);
     }
   }
 }
@@ -1606,14 +1605,6 @@ function drawWH() {
 }
 
 function drawForeground() {
-  const grassX = worldX(1470);
-  if (grassX > -220 && grassX < viewWidth + 220) {
-    assetManager.draw(ctx, "props.grass", { x: grassX, y: groundY + 8, height: 86, alpha: .92 });
-  }
-  const flowerX = worldX(1615);
-  if (flowerX > -220 && flowerX < viewWidth + 220) {
-    assetManager.draw(ctx, "props.flowerbed", { x: flowerX, y: groundY + 8, height: 92, alpha: .95 });
-  }
   const x = worldX(2140);
   if (x > -200 && x < viewWidth + 200) {
     ctx.fillStyle = "rgba(69,173,92,0.85)";

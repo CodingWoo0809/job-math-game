@@ -17,3 +17,24 @@
 .ratio-form fieldset{margin:0 0 14px;padding:14px;border:1px solid #dce3dc;border-radius:14px;background:#fff}.ratio-form legend{padding:0 5px;color:var(--navy);font-size:.78rem;font-weight:900}.ratio-inputs{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:7px}.ratio-inputs input,.share-inputs input{width:100%;padding:10px;border:2px solid #d7dfdf;border-radius:9px;text-align:center;font-weight:900}.share-inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.share-inputs label{position:relative;color:var(--ink-soft);font-size:.7rem;font-weight:900}.share-inputs span{position:absolute;right:8px;bottom:11px;color:var(--ink-soft)}.share-inputs input{margin-top:5px;padding-right:25px}.ratio-actions{display:grid;grid-template-columns:auto 1fr;gap:8px}.ratio-actions button{min-height:46px}
 .mixture-card{width:min(850px,100%)}.mixture-layout{display:grid;grid-template-columns:.75fr 1.25fr;gap:25px;padding:0 28px 30px}.tank-visual{display:flex;min-height:320px;flex-direction:column;align-items:center;justify-content:center;border-radius:20px;background:linear-gradient(145deg,#315d46,#5b8d57)}.tank{position:relative;width:145px;height:190px;overflow:hidden;border:6px solid rgba(255,255,255,.7);border-radius:20px 20px 35px 35px}.tank i{position:absolute;right:0;bottom:0;left:0;height:12%;background:#b1d66d;transition:height .5s}.tank span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:1.3rem;font-weight:950}.valves{display:flex;gap:38px;margin-top:15px;color:#e9f6cf;font-size:.72rem}.mixture-form>p{margin:0;color:var(--ink-soft);line-height:1.6}.mixture-form h3{color:var(--navy);font-size:1.15rem}.mixture-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mixture-inputs label{color:var(--ink-soft);font-size:.75rem;font-weight:900}.mixture-inputs .money-input{margin-top:7px}.forest-complete{background:linear-gradient(150deg,#244b38,#6fa05d 56%,#d8bd77)}.forest-summary{border-color:#cde1c4;background:#f0f8eb}.forest-summary span{color:var(--forest)}
 @media(max-width:780px){.forest-hero{display:none}.monkey-layout,.mixture-layout{grid-template-columns:1fr;padding-right:18px;padding-left:18px}.tank-visual{min-height:180px}.tank{width:100px;height:120px}.scene-progress{display:none}}
+
+
+/* Asset-backed start preview. */
+.forest-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    url("./assets/characters/sprites/wildlife_keeper.png") 27% 83% / auto 130px no-repeat,
+    url("./assets/characters/sprites/wh.png") 48% 87% / auto 138px no-repeat,
+    url("./assets/characters/sprites/monkey.png") 64% 83% / auto 96px no-repeat,
+    url("./assets/characters/sprites/monkey.png") 76% 80% / auto 112px no-repeat,
+    url("./assets/props/sprites/banana_bunch.png") 68% 90% / auto 64px no-repeat,
+    url("./assets/vehicles/sprites/school_town_shuttle_bus.png") 15% 88% / auto 214px no-repeat,
+    url("./assets/props/sprites/tree.png") 91% 86% / auto 235px no-repeat;
+}
+
+.forest-hero .forest-caption { z-index: 6; }
+.forest-hero .hero-bananas { opacity: .12; }

@@ -534,3 +534,7 @@
     transform: translateY(0);
   }
 }
+
+
+/* Asset-backed start preview. */
+.decision-hero::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:url("./assets/characters/sprites/wh.png") 30% 88%/auto 138px no-repeat,url("./assets/characters/sprites/math_teacher.png") 50% 84%/auto 128px no-repeat,url("./assets/props/sprites/sales_summary_easel.png") 73% 84%/auto 118px no-repeat,url("./assets/props/sprites/bench.png") 88% 91%/auto 116px no-repeat}.decision-hero .hero-caption{z-index:6}

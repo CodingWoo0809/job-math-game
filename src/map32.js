@@ -1,4 +1,5 @@
 import { checkProjectionAnswer, createProjectionRun, getOrthographicViews, getStructureAnswers } from "./orthographic-data.mjs";
+import { drawFutureBaseBackdrop, drawFutureSlidingDoor, drawFutureWH, ensureChapter3RoomAssets } from "./chapter3-room-visuals.mjs";
 
 const canvas = document.querySelector("#map32-canvas");
 const ctx = canvas.getContext("2d");
@@ -29,6 +30,7 @@ let state = makeState();
 let width = 1280;
 let height = 720;
 
+ensureChapter3RoomAssets();
 resize();
 requestAnimationFrame(loop);
 window.addEventListener("resize", resize);
@@ -183,25 +185,30 @@ function resize() {
 function drawRoom(now) {
   const density = Math.min(2, devicePixelRatio || 1);
   ctx.setTransform(density, 0, 0, density, 0, 0);
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, "#10202b");
-  gradient.addColorStop(1, "#05080d");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-  ctx.strokeStyle = "rgba(77,126,140,.28)";
-  ctx.lineWidth = 1;
-  for (let x = 0; x <= width; x += 80) { ctx.beginPath(); ctx.moveTo(width / 2, height * 0.42); ctx.lineTo(x, height); ctx.stroke(); }
-  for (let y = height * 0.48; y < height; y += 55) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
-  const pulse = 0.18 + Math.sin(now / 450) * 0.05;
-  [[width * 0.13, height * 0.34], [width * 0.87, height * 0.34], [width * 0.5, height * 0.11], [width * 0.5, height * 0.62]].forEach(([x, y]) => {
-    const beam = ctx.createRadialGradient(x, y, 3, x, y, 110);
-    beam.addColorStop(0, `rgba(91,220,210,${pulse})`);
-    beam.addColorStop(1, "rgba(91,220,210,0)");
-    ctx.fillStyle = beam;
-    ctx.fillRect(x - 110, y - 110, 220, 220);
+  drawFutureBaseBackdrop(ctx, {
+    width,
+    height,
+    now,
+    lineColor: "rgba(77,126,140,.28)",
+    glowColor: "91,220,210"
   });
   drawLift();
-  drawWH();
+  drawFutureSlidingDoor(ctx, {
+    width,
+    height,
+    progress: state.doorProgress,
+    xRatio: 0.5,
+    doorHeightRatio: 0.56
+  });
+  drawFutureWH(ctx, {
+    width,
+    height,
+    now,
+    xRatio: 0.5,
+    yRatio: 0.76,
+    yOffset: -state.doorProgress * height * 0.11,
+    spriteHeight: 154
+  });
 }
 
 function drawLift() {

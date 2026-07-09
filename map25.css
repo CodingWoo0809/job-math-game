@@ -3,3 +3,39 @@
 .age-card{width:min(1040px,100%);background:#f5efe3}.age-progress{display:flex;align-items:center;padding:0 28px 20px}.age-progress span{display:flex;align-items:center;gap:7px;color:#9b9299;font-size:.7rem;font-weight:900}.age-progress span b{display:grid;width:25px;height:25px;place-items:center;border:2px solid #c8bec3;border-radius:50%;background:#fff}.age-progress span.is-active,.age-progress span.is-complete{color:var(--brick)}.age-progress span.is-active b,.age-progress span.is-complete b{border-color:var(--brick);background:var(--brick);color:#fff}.age-progress i{flex:1;height:2px;margin:0 10px;background:#d9ced0}.age-layout{display:grid;grid-template-columns:.82fr 1.18fr;gap:20px;padding:0 28px 30px}.clue-board{padding:22px;border:1px solid #cdbb9f;border-radius:4px;background:repeating-linear-gradient(180deg,#fbf3df 0 30px,#e4d7bb 31px);box-shadow:0 13px 30px rgba(66,46,47,.12);transform:rotate(-1deg)}.clue-board>p{margin:0 0 15px;color:var(--brick);font-weight:950}.clue-board dl{margin:0}.clue-board dl div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #b8a88f;font-size:.76rem}.clue-board dd{margin:0;color:#513a42;font-weight:950}.variable-card{display:flex;flex-direction:column;margin-top:20px;padding:15px;border:2px solid #87718b;border-radius:11px;background:#f4edf4}.variable-card span,.variable-card small{color:#6d5f70;font-size:.68rem}.variable-card strong{margin:5px 0;color:#55495e;font-size:1.45rem}.age-form fieldset{display:grid;gap:8px;margin:0;padding:15px;border:1px solid #d4c8c6;border-radius:14px}.age-form legend{padding:0 5px;color:var(--night);font-size:.78rem;font-weight:900}.age-form label{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #ded4d2;border-radius:10px;background:#fff;font-size:.78rem;cursor:pointer}.age-form label:hover{border-color:#9a7c86;background:#fffaf4}.age-form input{accent-color:var(--brick)}.age-form label span{font:850 .86rem ui-monospace,monospace}.age-actions{display:grid;grid-template-columns:auto 1fr;gap:8px}.age-actions button{min-height:46px}.answer-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:23px;padding:0 28px 32px}.equation-board{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;padding:24px;border:1px solid #41394b;border-radius:17px;background:#292635;color:#fff;text-align:center;box-shadow:0 16px 35px rgba(30,25,39,.22)}.equation-board span,.equation-board small{color:#cbbfd1;font-size:.7rem}.equation-board strong{margin:10px 0;color:#f1cc77;font:950 1.25rem ui-monospace,monospace}.equation-board b{color:#fff;font:950 1.65rem ui-monospace,monospace}.equation-arrow{margin:4px 0 10px;color:#a998ad;font-size:.7rem}.answer-form h3{margin:0 0 17px;color:var(--night);font-size:1.15rem}.age-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}.age-inputs label{color:#6e6570;font-size:.75rem;font-weight:900}.age-inputs .money-input{margin-top:6px}.age-success{padding:0 28px 36px;text-align:center}.age-cards{display:flex;justify-content:center;gap:12px}.age-cards div{display:flex;width:170px;flex-direction:column;padding:19px;border:1px solid #d1c2bc;border-radius:15px;background:#fff}.age-cards span{color:#786d75;font-size:.7rem;font-weight:900}.age-cards strong{margin-top:6px;color:var(--brick);font-size:1.7rem}.verification-row{display:flex;justify-content:center;gap:8px;margin:15px 0}.verification-row span{padding:10px 13px;border-radius:10px;background:#ebe4e9;color:#6b5e6d;font-size:.7rem}.verification-row b{display:block;margin-top:3px;color:#413747;font:900 .82rem ui-monospace,monospace}.age-success h3{margin:0 0 18px;color:var(--night)}.alley-complete{background:linear-gradient(150deg,#211e2b,#463a4f 55%,#74474d)}.alley-summary{border-color:#d2c2c9;background:#f4edf1}.alley-summary span{color:var(--brick)}
 .system-instruction{margin-bottom:18px;padding:17px;border:1px solid #d4c7c8;border-radius:14px;background:#fff}.system-instruction span{color:var(--brick);font-size:.68rem;font-weight:950;letter-spacing:.08em}.system-instruction h3{margin:6px 0 8px;color:var(--night);font-size:1.15rem}.system-instruction p{margin:0;color:#746a72;font-size:.76rem;line-height:1.55}
 @media(max-width:780px){.alley-hero{display:none}.age-layout{grid-template-columns:1fr;padding-right:18px;padding-left:18px}.age-progress{padding-right:18px;padding-left:18px}.age-progress span{font-size:0}.age-progress span b{font-size:.7rem}.equation-chip{display:none}.age-inputs{grid-template-columns:1fr}.verification-row{flex-direction:column}.clue-board{transform:none}}
+
+
+/* Asset-backed start preview. */
+.alley-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    url("./assets/characters/sprites/wh.png") 46% 88% / auto 138px no-repeat,
+    url("./assets/characters/sprites/directions/pedestrian_04_front.png") 65% 85% / auto 142px no-repeat,
+    url("./assets/characters/sprites/directions/pedestrian_05_front.png") 79% 85% / auto 142px no-repeat,
+    url("./assets/props/sprites/street_lamp.png") 17% 86% / auto 210px no-repeat,
+    url("./assets/props/sprites/trash_can.png") 92% 91% / auto 82px no-repeat;
+}
+
+.alley-hero .alley-caption,
+.alley-hero .hero-clue,
+.alley-hero .hero-difference { z-index: 6; }
+.alley-hero .brother-silhouette { opacity: .18; }
+
+
+/* 2map5 alley renewal preview. */
+.alley-hero::after {
+  background:
+    url("./assets/characters/sprites/delinquent_monkey.png") 23% 48% / auto 72px no-repeat,
+    url("./assets/characters/sprites/wh.png") 39% 88% / auto 138px no-repeat,
+    url("./assets/characters/sprites/bully_brothers.png") 67% 86% / auto 190px no-repeat,
+    url("./assets/props/sprites/blocked_chain_barrier.png") 66% 92% / 220px 122px no-repeat,
+    url("./assets/props/sprites/flickering_streetlight.png") 17% 86% / auto 210px no-repeat,
+    url("./assets/props/sprites/alley_wall_07.png") 83% 82% / auto 210px no-repeat,
+    url("./assets/props/sprites/alley_wall_02.png") 8% 86% / auto 190px no-repeat;
+}
+
+.alley-hero .brother-silhouette { opacity: 0; }

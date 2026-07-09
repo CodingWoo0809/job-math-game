@@ -848,3 +848,7 @@ body {
     width: calc(100% - 28px);
   }
 }
+
+
+/* Asset-backed start preview. */
+.interpretation-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/characters/sprites/wh.png") 27% 88%/auto 138px no-repeat,url("./assets/characters/sprites/math_teacher.png") 47% 84%/auto 128px no-repeat,url("./assets/characters/sprites/elementary_boy.png") 66% 87%/auto 112px no-repeat,url("./assets/characters/sprites/elementary_girl.png") 78% 87%/auto 112px no-repeat}.interpretation-hero .hero-caption{z-index:6}

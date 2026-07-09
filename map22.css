@@ -3,3 +3,24 @@
 .document-card{width:min(940px,100%)}.document-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;padding:0 28px 30px}.paper-sheet{position:relative;min-height:330px;padding:28px;border:1px solid #dfd4bd;border-radius:4px;background:repeating-linear-gradient(180deg,#fffaf0 0 31px,#e8dec8 32px);box-shadow:0 12px 30px rgba(67,56,43,.1);transform:rotate(-1deg)}.paper-sheet>span{position:absolute;top:18px;right:18px;padding:7px 10px;border:3px double #a45143;border-radius:50%;color:#a45143;font-size:.68rem;font-weight:950;transform:rotate(8deg)}.paper-sheet h3{margin:5px 0 20px;color:var(--navy);font-size:1.1rem}.document-facts{display:grid;gap:9px}.document-facts div{display:flex;justify-content:space-between;gap:15px;padding-bottom:7px;border-bottom:1px dashed #bdb29e;font-size:.78rem}.document-facts b{color:var(--pine)}.document-rule{margin-top:20px;padding:11px;border-radius:9px;background:rgba(77,90,56,.1);color:var(--pine);font-size:.72rem;font-weight:900;line-height:1.5}.document-form>p{margin:0 0 15px;color:var(--ink-soft);line-height:1.6}.document-inputs{display:grid;gap:12px}.document-inputs label{color:var(--ink-soft);font-size:.75rem;font-weight:900}.document-inputs .money-input{margin-top:6px}.document-actions{display:grid;grid-template-columns:auto 1fr;gap:8px}.document-actions button{min-height:46px}
 .resolution-card{width:min(720px,100%);padding:38px;text-align:center}.evidence-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:26px}.evidence-row span{padding:12px 7px;border:1px solid #d8dfd0;border-radius:12px;background:#f2f6ed;color:var(--ink-soft);font-size:.68rem;font-weight:800}.evidence-row b{display:block;margin-top:4px;color:var(--pine);font-size:1.2rem}.resolution-card h2{margin:0;color:var(--navy);font-size:1.9rem}.resolution-card>p:not(.eyebrow){color:var(--ink-soft);line-height:1.7}.new-contract{display:flex;flex-direction:column;margin:20px 0;padding:17px;border:1px dashed #af9f7f;border-radius:13px;background:#fff8e8}.new-contract span,.new-contract small{color:var(--ink-soft);font-size:.7rem}.new-contract strong{margin:6px 0;color:var(--pine);font-size:1.5rem}.resolution-card>button{margin:4px}.forestry-complete{background:linear-gradient(150deg,#3d4b31,#718552 56%,#d2ad68)}.forestry-summary{border-color:#d2dfc3;background:#f2f7ed}.forestry-summary span{color:var(--pine)}
 @media(max-width:780px){.forestry-hero{display:none}.document-layout{grid-template-columns:1fr;padding-right:18px;padding-left:18px}.paper-sheet{min-height:260px}.evidence-row{grid-template-columns:1fr}.evidence-count{display:none}}
+
+
+/* Asset-backed start preview. */
+.forestry-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    url("./assets/characters/sprites/forest_worker_01.png") 23% 83% / auto 128px no-repeat,
+    url("./assets/characters/sprites/forest_worker_03.png") 39% 84% / auto 128px no-repeat,
+    url("./assets/characters/sprites/wh.png") 55% 88% / auto 138px no-repeat,
+    url("./assets/props/sprites/salary_proposal_easel.png") 70% 84% / auto 120px no-repeat,
+    url("./assets/props/sprites/safety_quote_easel.png") 82% 84% / auto 120px no-repeat,
+    url("./assets/props/sprites/business_profit_easel.png") 94% 84% / auto 120px no-repeat,
+    url("./assets/props/sprites/tree.png") 8% 84% / auto 240px no-repeat;
+}
+
+.forestry-hero .forestry-caption { z-index: 6; }
+.forestry-hero .helmet { opacity: .18; }

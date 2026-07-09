@@ -3,3 +3,7 @@
 .solid-option .edge{fill:none;stroke-linecap:round;stroke-linejoin:round}.solid-option .edge.visible{stroke:#c1f2ed;stroke-width:2.6}.solid-option .edge.hidden{stroke:#718f96;stroke-width:2;stroke-dasharray:6 5}
 @media(max-width:820px){.cell-hero{display:none}.puzzle-layout{grid-template-columns:1fr}.puzzle-card{max-height:96vh}.net-screen,.choice-screen{min-height:0}.net-screen svg{height:250px}.solid-option{min-height:135px}.solid-option svg{height:115px}.streak-chip{display:none}}
 @media(max-width:560px){.puzzle-header{align-items:flex-start}.puzzle-layout{padding:10px}.solid-options{grid-template-columns:repeat(2,1fr)}.solid-option:nth-child(4),.solid-option:nth-child(5){transform:none}.solid-option:nth-child(5){grid-column:1/-1;width:50%;justify-self:center}.solid-option:nth-child(4):hover,.solid-option:nth-child(5):hover{transform:translateY(-2px)}.screen-label small{display:none}}
+
+
+/* Asset-backed start preview. */
+.cell-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/characters/sprites/wh.png") 48% 88%/auto 138px no-repeat,url("./assets/props/sprites/closed_iron_gate.png") 78% 86%/auto 130px no-repeat,url("./assets/props/sprites/route_calibration_kiosk.png") 23% 84%/auto 112px no-repeat}.cell-hero .cell-caption{z-index:6}.cell-hero .wire-cube{z-index:3;opacity:.72}

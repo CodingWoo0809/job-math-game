@@ -6,3 +6,21 @@
 .atm-success{padding:0 28px 35px;text-align:center}.receipt{width:min(440px,100%);margin:0 auto 20px;padding:25px;border:1px dashed #9f9b8e;background:#fff;font-family:ui-monospace,monospace;text-align:left;box-shadow:0 12px 30px rgba(40,50,43,.1)}.receipt>span{display:block;text-align:center;font-size:.68rem;letter-spacing:.12em}.receipt>b{display:block;margin:12px 0 20px;text-align:center;font-size:1.45rem}.receipt dl{margin:0}.receipt dl div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dotted #aaa;font-size:.76rem}.receipt dd{font-weight:900}.atm-complete{background:linear-gradient(150deg,#28514b,#5e8b69 56%,#d0b66c)}.atm-summary{border-color:#cae0d1;background:#eef7f0}.atm-summary span{color:var(--atm)}
 @media(max-width:1080px){.atm-problem{grid-template-columns:minmax(280px,.9fr) minmax(340px,1.1fr)}.mini-calculator{grid-column:1/-1;display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center}.calculator-title{display:block;margin:0}.calculator-title small{display:block;margin-top:5px}.calculator-display{grid-column:1}.calculator-pad{grid-column:2;grid-row:1/3;margin:0}.calculator-example{grid-column:1;margin:0}}
 @media(max-width:780px){.atm-hero{display:none}.atm-problem{grid-template-columns:1fr;padding-right:18px;padding-left:18px}.mini-calculator{display:block}.calculator-pad{margin-top:9px}.calculator-example{margin-top:9px}.wallet-chip{display:none}.atm-input-grid{grid-template-columns:1fr}.atm-input-grid .account-total-label{grid-column:auto}}
+
+
+/* Asset-backed start preview. */
+.atm-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    url("./assets/characters/sprites/wh.png") 35% 86% / auto 140px no-repeat,
+    url("./assets/props/sprites/atm_machine.png") 56% 82% / auto 230px no-repeat,
+    url("./assets/buildings/sprites/shuttle_bus_transfer_center.png") 91% 82% / auto 185px no-repeat,
+    url("./assets/props/sprites/tree.png") 13% 86% / auto 220px no-repeat;
+}
+
+.atm-hero .atm-caption { z-index: 6; }
+.atm-hero .hero-atm { opacity: .12; }

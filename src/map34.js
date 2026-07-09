@@ -1,4 +1,5 @@
 import { checkPlaneStageAnswer, createPlaneGeometryRun, getDieSquares } from "./plane-geometry-data.mjs";
+import { drawFutureBaseBackdrop, drawFutureSlidingDoor, drawFutureWH, ensureChapter3RoomAssets } from "./chapter3-room-visuals.mjs";
 
 const canvas = document.querySelector("#map34-canvas");
 const ctx = canvas.getContext("2d");
@@ -25,11 +26,12 @@ const ui = {
   next: document.querySelector("#map34-next")
 };
 
-const makeState = () => ({ run: createPlaneGeometryRun(), index: 0, locked: false, cutterProgress: 0, lastTime: performance.now() });
+const makeState = () => ({ run: createPlaneGeometryRun(), index: 0, locked: false, cutterProgress: 0, doorProgress: 0, lastTime: performance.now() });
 let state = makeState();
 let width = 1280;
 let height = 720;
 
+ensureChapter3RoomAssets();
 resize();
 requestAnimationFrame(loop);
 window.addEventListener("resize", resize);
@@ -123,6 +125,7 @@ function renderProgress() {
 
 function completeMap() {
   ui.puzzle.classList.add("is-hidden");
+  state.doorProgress = 0.01;
   ui.objective.textContent = "차폐 부품 제작 완료. 마지막 입체 격실로 이동하자.";
   setTimeout(() => {
     ui.hud.classList.add("is-hidden");
@@ -222,6 +225,7 @@ function loop(now) {
   const dt = Math.min(0.034, (now - state.lastTime) / 1000 || 0);
   state.lastTime = now;
   state.cutterProgress = Math.max(0, Math.min(1, state.cutterProgress + dt * 0.05));
+  if (state.doorProgress > 0) state.doorProgress = Math.min(1, state.doorProgress + dt * 0.85);
   drawRoom(now);
   requestAnimationFrame(loop);
 }
@@ -239,14 +243,31 @@ function resize() {
 function drawRoom(now) {
   const density = Math.min(2, devicePixelRatio || 1);
   ctx.setTransform(density, 0, 0, density, 0, 0);
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, "#1b111a");
-  gradient.addColorStop(1, "#07060b");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-  drawFactoryGrid(now);
+  drawFutureBaseBackdrop(ctx, {
+    width,
+    height,
+    now,
+    lineColor: "rgba(255,111,155,.2)",
+    glowColor: "117,232,255"
+  });
   drawCuttingTable(now);
-  drawWH(now);
+  drawFutureSlidingDoor(ctx, {
+    width,
+    height,
+    progress: state.doorProgress,
+    xRatio: 0.78,
+    doorHeightRatio: 0.48,
+    maxDoorHeight: 350,
+    glow: "117,232,255"
+  });
+  drawFutureWH(ctx, {
+    width,
+    height,
+    now,
+    xRatio: 0.45 + state.doorProgress * 0.18,
+    yRatio: 0.8,
+    spriteHeight: 154
+  });
 }
 
 function drawFactoryGrid(now) {

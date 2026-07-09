@@ -1669,3 +1669,33 @@ kbd {
     transition-duration: 0.001ms !important;
   }
 }
+
+
+
+/* Asset-backed start previews for the student-open maps. */
+.maple-cute-map1 .route-line {
+  right: 14px;
+  bottom: 54px;
+  left: 14px;
+  height: 276px;
+  border: 0;
+  background:
+    url("./assets/characters/sprites/truck_driver.png") 74% 87% / auto 118px no-repeat,
+    url("./assets/characters/sprites/wh.png") 54% 96% / auto 150px no-repeat,
+    url("./assets/vehicles/sprites/logistics_truck.png") 14% 94% / auto 210px no-repeat,
+    url("./assets/buildings/sprites/morning_bakery.png") 92% 89% / auto 205px no-repeat,
+    url("./assets/props/sprites/closed_iron_gate.png") 70% 92% / auto 126px no-repeat;
+  transform: none;
+}
+
+.maple-cute-map1 .route-line span,
+.maple-cute-map1 .wh-portrait {
+  display: none;
+}
+
+/* Student flow guard: prevent accidental backtracking or replay after progression. */
+.start-actions .back-link,
+.gateway-actions .secondary-button,
+.complete-actions .secondary-button {
+  display: none !important;
+}

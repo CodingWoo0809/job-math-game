@@ -1,4 +1,5 @@
 import { DIRECTION_LABELS, checkEscapePlan, createSimilarityRun, getActualRoute, getRoutePoints, getScaleDenominator } from "./similarity-route-data.mjs";
+import { drawFutureBaseBackdrop, drawFutureSlidingDoor, drawFutureWH, ensureChapter3RoomAssets } from "./chapter3-room-visuals.mjs";
 
 const canvas = document.querySelector("#map33-canvas");
 const ctx = canvas.getContext("2d");
@@ -31,6 +32,7 @@ let state = makeState();
 let width = 1280;
 let height = 720;
 
+ensureChapter3RoomAssets();
 resize();
 requestAnimationFrame(loop);
 window.addEventListener("resize", resize);
@@ -224,15 +226,31 @@ function resize() {
 function drawRoom(now) {
   const density = Math.min(2, devicePixelRatio || 1);
   ctx.setTransform(density, 0, 0, density, 0, 0);
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, "#16142d");
-  gradient.addColorStop(1, "#060710");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-  drawPerspectiveGrid(now);
+  drawFutureBaseBackdrop(ctx, {
+    width,
+    height,
+    now,
+    lineColor: "rgba(140,125,255,.22)",
+    glowColor: "120,239,226"
+  });
   drawProjectedMap(now);
-  drawExitDoor();
-  drawWH(now);
+  drawFutureSlidingDoor(ctx, {
+    width,
+    height,
+    progress: state.doorProgress,
+    xRatio: 0.79,
+    doorHeightRatio: 0.47,
+    maxDoorHeight: 340,
+    glow: "120,239,226"
+  });
+  drawFutureWH(ctx, {
+    width,
+    height,
+    now,
+    xRatio: 0.42 + state.doorProgress * 0.22,
+    yRatio: 0.79,
+    spriteHeight: 154
+  });
 }
 
 function drawPerspectiveGrid(now) {

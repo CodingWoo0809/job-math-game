@@ -1,3 +1,4 @@
+import { assetManager } from "./asset-manager.mjs";
 import { AGE_DATA, evaluateAges } from "./age-logic.mjs";
 
 const canvas=document.querySelector("#map25-canvas"),ctx=canvas.getContext("2d");
@@ -6,9 +7,25 @@ const ui={hud:document.querySelector("#map25-hud"),objective:document.querySelec
 const makeState=()=>({started:false,playerX:180,direction:1,cameraX:0,confronted:false,agesSolved:false,passageOpen:false,brotherOffset:0,chainDrop:0,nearby:null,hintIndex:0,dialogueQueue:[],dialogueCallback:null,complete:false,walkTime:0,lastTime:performance.now()});
 let state=makeState(),viewWidth=1280,viewHeight=720,groundY=540,toastTimer=null;
 const keys={left:false,right:false};
-const world={width:2920,challengeX:1540,interactions:[{id:"brothers",x:1540,radius:155,label:"골목 형제와 대화"}]};
+const world={width:2920,challengeX:1540,interactions:[{id:"brothers",x:1540,radius:155,label:"불량배 형제와 대화"}]};
 
-resize();requestAnimationFrame(loop);
+const ALLEY_WALL_KEYS=Object.freeze(["props.alleyWalls.wall07","props.alleyWalls.wall02","props.alleyWalls.wall11","props.alleyWalls.wall04","props.alleyWalls.wall09","props.alleyWalls.wall01","props.alleyWalls.wall12","props.alleyWalls.wall05","props.alleyWalls.wall03","props.alleyWalls.wall10","props.alleyWalls.wall06","props.alleyWalls.wall08"]);
+const WALL_LAYOUT=Object.freeze([
+  {x:120,key:0,height:286,y:0,alpha:.96},{x:385,key:4,height:246,y:0,alpha:.92},{x:650,key:1,height:306,y:0,alpha:.96},{x:940,key:7,height:258,y:0,alpha:.93},
+  {x:1980,key:2,height:318,y:0,alpha:.96},{x:2265,key:8,height:282,y:0,alpha:.94},{x:2545,key:5,height:304,y:0,alpha:.96},{x:2790,key:10,height:252,y:0,alpha:.92}
+]);
+const LIGHT_LAYOUT=Object.freeze([
+  {x:835,key:"props.flickeringStreetlight",height:262,glow:true,flicker:true},
+  {x:2265,key:"props.brokenStreetlight",height:250,glow:false},
+  {x:2765,key:"props.streetlight",height:266,glow:true}
+]);
+const DELINQUENT_MONKEY_LAYOUT=Object.freeze([
+  {x:650,y:-292,height:82,alpha:.78,flipX:false},
+  {x:2250,y:-214,height:72,alpha:.72,flipX:true}
+]);
+const CHAIN_BARRIER_BOX=Object.freeze({width:390,height:210});
+
+resize();assetManager.loadAll().catch((error)=>console.warn(error));requestAnimationFrame(loop);
 ui.startButton.addEventListener("click",startGame);ui.dialogueNext.addEventListener("click",advanceDialogue);ui.close.addEventListener("click",()=>closePanel(ui.panel));ui.answerForm.addEventListener("submit",submitAges);ui.answerHint.addEventListener("click",showAnswerHint);ui.dropChain.addEventListener("click",openPassage);ui.replay.addEventListener("click",resetGame);ui.next.addEventListener("click",()=>{window.location.href="./chapter3.html"});window.addEventListener("resize",resize);window.addEventListener("keydown",keyDown);window.addEventListener("keyup",keyUp);window.addEventListener("blur",clearMovement);bindHold(ui.left,"left");bindHold(ui.right,"right");ui.interact.addEventListener("pointerdown",event=>{event.preventDefault();interact()});
 
 function startGame(){state.started=true;state.lastTime=performance.now();ui.start.classList.add("is-hidden");ui.hud.classList.remove("is-hidden");if(matchMedia("(hover: none),(pointer: coarse)").matches)ui.touch.classList.remove("is-hidden");canvas.focus()}
@@ -21,7 +38,7 @@ function clearMovement(){keys.left=false;keys.right=false}
 function loop(now){const dt=Math.min(.034,(now-state.lastTime)/1000||0);state.lastTime=now;update(dt);draw();requestAnimationFrame(loop)}
 function update(dt){if(!state.started||state.complete)return;if(state.passageOpen){state.brotherOffset=Math.min(180,state.brotherOffset+dt*90);state.chainDrop=Math.min(115,state.chainDrop+dt*100)}if(!paused()){let direction=0;if(keys.left)direction--;if(keys.right)direction++;if(direction){state.playerX+=direction*235*dt;state.direction=direction;state.walkTime+=dt*10;const limit=state.passageOpen?world.width-70:1400;state.playerX=Math.max(70,Math.min(limit,state.playerX))}}updateNearby();updateCamera(dt);if(state.passageOpen&&state.playerX>2730)completeMap()}
 function paused(){return!ui.dialogue.classList.contains("is-hidden")||!ui.panel.classList.contains("is-hidden")}
-function updateNearby(){if(paused()||state.passageOpen){state.nearby=null;ui.prompt.classList.add("is-hidden");return}const distance=Math.abs(state.playerX-world.challengeX);state.nearby=distance<=world.interactions[0].radius?"brothers":null;if(state.nearby){ui.promptText.textContent=state.confronted?"나이 문제 다시 보기":"골목 형제와 대화";ui.prompt.classList.remove("is-hidden")}else ui.prompt.classList.add("is-hidden")}
+function updateNearby(){if(paused()||state.passageOpen){state.nearby=null;ui.prompt.classList.add("is-hidden");return}const distance=Math.abs(state.playerX-world.challengeX);state.nearby=distance<=world.interactions[0].radius?"brothers":null;if(state.nearby){ui.promptText.textContent=state.confronted?"나이 문제 다시 보기":"불량배 형제와 대화";ui.prompt.classList.remove("is-hidden")}else ui.prompt.classList.add("is-hidden")}
 
 function interact(){if(!state.started||paused()||state.nearby!=="brothers")return;if(!state.confronted){showDialogue([{speaker:"형",avatar:"형",text:"잠깐. 이 골목을 지나려면 가진 돈을 좀 내놓고 가."},{speaker:"WH",avatar:"WH",text:"사람이 다니는 길을 막고 돈을 요구하면 안 돼. 비켜 줘."},{speaker:"동생",avatar:"동생",text:"그럼 문제 하나 맞혀 봐. 지금 우리 둘의 나이 차는 4살이야."},{speaker:"형",avatar:"형",text:"3년 뒤에는 우리 나이의 합이 40살이 되지. 지금 우리 둘의 나이를 맞히면 돈 안 받고 보내 줄게."},{speaker:"WH",avatar:"WH",text:"동생의 현재 나이를 x살, 형의 현재 나이를 y살로 두고 두 조건을 연립방정식으로 풀어 볼게."}],()=>{state.confronted=true;ui.objective.textContent="두 단서를 연립방정식으로 나타내어 현재 나이를 구하자.";openChallenge()})}else openChallenge()}
 function openChallenge(){if(state.agesSolved)showSuccess();else showSolveStage();openPanel(ui.panel)}
@@ -42,16 +59,64 @@ function completeMap(){state.complete=true;ui.hud.classList.add("is-hidden");ui.
 function resize(){const rect=canvas.getBoundingClientRect(),density=Math.min(2,devicePixelRatio||1);viewWidth=Math.max(320,rect.width);viewHeight=Math.max(360,rect.height);groundY=Math.max(330,viewHeight*.76);canvas.width=Math.round(viewWidth*density);canvas.height=Math.round(viewHeight*density);ctx.setTransform(density,0,0,density,0,0)}
 function updateCamera(dt){let target=state.playerX-viewWidth*.4;target=Math.max(0,Math.min(world.width-viewWidth,target));state.cameraX+=(target-state.cameraX)*(1-Math.exp(-4.5*dt))}
 function screenX(x,parallax=1){return x-state.cameraX*parallax}
-function draw(){const density=Math.min(2,devicePixelRatio||1);ctx.setTransform(density,0,0,density,0,0);ctx.clearRect(0,0,viewWidth,viewHeight);drawSky();drawGround();drawBrickBlocks();drawBridge();drawLights();drawBrothers();drawChain();drawMarkers();drawWH()}
+function draw(){const density=Math.min(2,devicePixelRatio||1);ctx.setTransform(density,0,0,density,0,0);ctx.clearRect(0,0,viewWidth,viewHeight);drawSky();drawGround();drawBrickBlocks();drawDelinquentMonkey();drawLights();drawBrothers();drawChain();drawMarkers();drawWH()}
 function drawSky(){const gradient=ctx.createLinearGradient(0,0,0,groundY);gradient.addColorStop(0,"#6d677d");gradient.addColorStop(.48,"#55485d");gradient.addColorStop(1,"#302936");ctx.fillStyle=gradient;ctx.fillRect(0,0,viewWidth,viewHeight);ctx.fillStyle="#d18c55";ctx.beginPath();ctx.arc(screenX(330,.18),groundY-300,54,0,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(36,31,43,.55)";for(let x=-100;x<viewWidth+200;x+=230){const point=x-(state.cameraX*.12)%230;ctx.beginPath();ctx.arc(point,groundY-180,130,Math.PI,0);ctx.lineTo(point+130,groundY);ctx.lineTo(point-130,groundY);ctx.fill()}}
 function drawGround(){ctx.fillStyle="#423940";ctx.fillRect(0,groundY-28,viewWidth,56);ctx.fillStyle="#211e27";ctx.fillRect(0,groundY+28,viewWidth,viewHeight-groundY);ctx.strokeStyle="#6f6065";ctx.lineWidth=2;for(let x=-(state.cameraX%90);x<viewWidth;x+=90){ctx.beginPath();ctx.moveTo(x,groundY-25);ctx.lineTo(x+45,groundY+25);ctx.stroke()}}
-function drawBrickBlocks(){for(const [x,w,h] of [[80,330,280],[510,250,225],[2050,370,300],[2500,310,250]]){const point=screenX(x,.92);ctx.fillStyle="#51353d";ctx.fillRect(point,groundY-h,w,h);ctx.strokeStyle="#76505a";ctx.lineWidth=2;for(let y=groundY-h+25;y<groundY;y+=34){ctx.beginPath();ctx.moveTo(point,y);ctx.lineTo(point+w,y);ctx.stroke();const offset=((y/34)%2)*38;for(let bx=point+offset;bx<point+w;bx+=76){ctx.beginPath();ctx.moveTo(bx,y-34);ctx.lineTo(bx,y);ctx.stroke()}}}}
+function drawBrickBlocks(){
+  let drewAny=false;
+  for(const item of WALL_LAYOUT){
+    const point=screenX(item.x,.92);
+    if(point<-240||point>viewWidth+240)continue;
+    const key=ALLEY_WALL_KEYS[item.key%ALLEY_WALL_KEYS.length];
+    const drawn=assetManager.draw(ctx,key,{x:point,y:groundY+item.y,height:item.height,anchorX:.5,anchorY:1,alpha:item.alpha});
+    drewAny=drewAny||drawn;
+  }
+  if(drewAny)return;
+  for(const [x,w,h] of [[80,330,280],[510,250,225],[2050,370,300],[2500,310,250]]){const point=screenX(x,.92);ctx.fillStyle="#51353d";ctx.fillRect(point,groundY-h,w,h);ctx.strokeStyle="#76505a";ctx.lineWidth=2;for(let y=groundY-h+25;y<groundY;y+=34){ctx.beginPath();ctx.moveTo(point,y);ctx.lineTo(point+w,y);ctx.stroke();const offset=((y/34)%2)*38;for(let bx=point+offset;bx<point+w;bx+=76){ctx.beginPath();ctx.moveTo(bx,y-34);ctx.lineTo(bx,y);ctx.stroke()}}}
+}
+function drawDelinquentMonkey(){
+  for(const item of DELINQUENT_MONKEY_LAYOUT){
+    const point=screenX(item.x);
+    if(point<-90||point>viewWidth+90)continue;
+    if(assetManager.draw(ctx,"characters.delinquentMonkey",{x:point,y:groundY+item.y,height:item.height,anchorX:.5,anchorY:1,alpha:item.alpha,flipX:item.flipX}))continue;
+    ctx.save();ctx.globalAlpha=item.alpha;ctx.fillStyle="#503d43";ctx.beginPath();ctx.arc(point,groundY+item.y-48,26,0,Math.PI*2);ctx.fill();ctx.restore();
+  }
+}
 function drawBridge(){ctx.fillStyle="#1d1b23";ctx.fillRect(0,groundY-350,viewWidth,66);ctx.strokeStyle="#48414e";ctx.lineWidth=22;for(let x=-180-(state.cameraX*.35)%330;x<viewWidth+250;x+=330){ctx.beginPath();ctx.moveTo(x,groundY-350);ctx.lineTo(x+230,groundY-95);ctx.stroke();ctx.beginPath();ctx.moveTo(x+230,groundY-350);ctx.lineTo(x,groundY-95);ctx.stroke()}}
-function drawLights(){for(const x of [840,2280,2760]){const point=screenX(x);ctx.fillStyle="#28242c";ctx.fillRect(point-6,groundY-240,12,240);ctx.fillRect(point-6,groundY-240,70,10);const glow=ctx.createRadialGradient(point+64,groundY-220,5,point+64,groundY-220,85);glow.addColorStop(0,"rgba(242,190,102,.6)");glow.addColorStop(1,"rgba(242,190,102,0)");ctx.fillStyle=glow;ctx.beginPath();ctx.arc(point+64,groundY-220,85,0,Math.PI*2);ctx.fill();ctx.fillStyle="#e1aa59";ctx.beginPath();ctx.arc(point+64,groundY-220,10,0,Math.PI*2);ctx.fill()}}
-function drawBrothers(){drawBrother(1495-state.brotherOffset,true);drawBrother(1595+state.brotherOffset,false)}
-function drawBrother(x,isOlder){const point=screenX(x);if(point<-70||point>viewWidth+70)return;const height=isOlder?128:109;ctx.save();ctx.translate(point,groundY);ctx.strokeStyle="#17151c";ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(-10,-45);ctx.lineTo(-15,-3);ctx.moveTo(10,-45);ctx.lineTo(15,-3);ctx.stroke();ctx.fillStyle=isOlder?"#70464d":"#5d526f";roundRect(ctx,-31,-height,62,height-40,18);ctx.fill();ctx.fillStyle="#fff";ctx.font="900 11px system-ui";ctx.textAlign="center";ctx.fillText(isOlder?"형":"동생",0,-75);ctx.fillStyle="#d9aa8e";ctx.beginPath();ctx.arc(0,-height-26,31,0,Math.PI*2);ctx.fill();ctx.fillStyle="#27212c";ctx.beginPath();ctx.arc(0,-height-37,33,Math.PI,Math.PI*2);ctx.fill();ctx.restore()}
-function drawChain(){const center=screenX(world.challengeX),y=groundY-43+state.chainDrop;ctx.strokeStyle="#8f8a91";ctx.lineWidth=6;for(let index=-8;index<=8;index++){ctx.beginPath();ctx.ellipse(center+index*20,y+Math.abs(index)*2,12,7,index%2?Math.PI/2:0,0,Math.PI*2);ctx.stroke()}ctx.fillStyle="#342e39";ctx.fillRect(center-190,groundY-125,15,125);ctx.fillRect(center+175,groundY-125,15,125)}
+function drawLights(){
+  let drewAny=false;
+  for(const item of LIGHT_LAYOUT){
+    const point=screenX(item.x);
+    if(point<-130||point>viewWidth+150)continue;
+    const flicker=item.flicker ? 0.72+Math.sin(performance.now()/115)*0.18 : 1;
+    if(item.glow){
+      const glow=ctx.createRadialGradient(point+42,groundY-218,5,point+42,groundY-218,92);
+      glow.addColorStop(0,`rgba(242,190,102,${0.42*flicker})`);glow.addColorStop(1,"rgba(242,190,102,0)");
+      ctx.fillStyle=glow;ctx.beginPath();ctx.arc(point+42,groundY-218,92,0,Math.PI*2);ctx.fill();
+    }
+    const drawn=assetManager.draw(ctx,item.key,{x:point,y:groundY+4,height:item.height,anchorX:.5,anchorY:1,alpha:item.flicker?Math.max(.58,flicker):1});
+    drewAny=drewAny||drawn;
+  }
+  if(drewAny)return;
+  for(const x of [840,2280,2760]){const point=screenX(x);ctx.fillStyle="#28242c";ctx.fillRect(point-6,groundY-240,12,240);ctx.fillRect(point-6,groundY-240,70,10);const glow=ctx.createRadialGradient(point+64,groundY-220,5,point+64,groundY-220,85);glow.addColorStop(0,"rgba(242,190,102,.6)");glow.addColorStop(1,"rgba(242,190,102,0)");ctx.fillStyle=glow;ctx.beginPath();ctx.arc(point+64,groundY-220,85,0,Math.PI*2);ctx.fill();ctx.fillStyle="#e1aa59";ctx.beginPath();ctx.arc(point+64,groundY-220,10,0,Math.PI*2);ctx.fill()}
+}
+function drawBrothers(){
+  const point=screenX(world.challengeX+(state.passageOpen?state.brotherOffset*1.25:0));
+  if(point>-180&&point<viewWidth+180){
+    if(assetManager.draw(ctx,"characters.bullyBrothers",{x:point,y:groundY+4,height:252,anchorX:.5,anchorY:1,alpha:state.passageOpen?.9:1}))return;
+  }
+  drawBrotherFallback(1495-state.brotherOffset,true);drawBrotherFallback(1595+state.brotherOffset,false);
+}
+function drawBrotherFallback(x,isOlder){const point=screenX(x);if(point<-70||point>viewWidth+70)return;const height=isOlder?128:109;ctx.save();ctx.translate(point,groundY);ctx.strokeStyle="#17151c";ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(-10,-45);ctx.lineTo(-15,-3);ctx.moveTo(10,-45);ctx.lineTo(15,-3);ctx.stroke();ctx.fillStyle=isOlder?"#70464d":"#5d526f";roundRect(ctx,-31,-height,62,height-40,18);ctx.fill();ctx.fillStyle="#fff";ctx.font="900 11px system-ui";ctx.textAlign="center";ctx.fillText(isOlder?"\ud615":"\ub3d9\uc0dd",0,-75);ctx.fillStyle="#d9aa8e";ctx.beginPath();ctx.arc(0,-height-26,31,0,Math.PI*2);ctx.fill();ctx.fillStyle="#27212c";ctx.beginPath();ctx.arc(0,-height-37,33,Math.PI,Math.PI*2);ctx.fill();ctx.restore()}
+function drawChain(){
+  const center=screenX(world.challengeX);
+  const key=state.passageOpen?"props.openChainBarrier":"props.blockedChainBarrier";
+  if(center>-260&&center<viewWidth+260){
+    if(assetManager.draw(ctx,key,{x:center,y:groundY+5,width:CHAIN_BARRIER_BOX.width,height:CHAIN_BARRIER_BOX.height,anchorX:.5,anchorY:1}))return;
+  }
+  const y=groundY-43+state.chainDrop;ctx.strokeStyle="#8f8a91";ctx.lineWidth=6;for(let index=-8;index<=8;index++){ctx.beginPath();ctx.ellipse(center+index*20,y+Math.abs(index)*2,12,7,index%2?Math.PI/2:0,0,Math.PI*2);ctx.stroke()}ctx.fillStyle="#342e39";ctx.fillRect(center-190,groundY-125,15,125);ctx.fillRect(center+175,groundY-125,15,125)
+}
 function drawMarkers(){if(!state.passageOpen)drawMarker(world.challengeX,state.nearby==="brothers")}
 function drawMarker(x,active){const point=screenX(x),bounce=Math.sin(performance.now()/260)*4;ctx.fillStyle=active?"#d49a45":"#8f7184";ctx.beginPath();ctx.arc(point,groundY-250+bounce,active?16:13,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.font="950 18px system-ui";ctx.textAlign="center";ctx.fillText(active?"E":"!",point,groundY-243+bounce)}
-function drawWH(){const point=screenX(state.playerX),moving=!paused()&&(keys.left||keys.right),step=moving?Math.sin(state.walkTime)*11:0;ctx.save();ctx.translate(point,groundY-2);ctx.scale(state.direction,1);ctx.strokeStyle="#111522";ctx.lineWidth=9;ctx.beginPath();ctx.moveTo(-8,-48);ctx.lineTo(-12-step*.55,-5);ctx.moveTo(9,-48);ctx.lineTo(14+step*.55,-5);ctx.stroke();ctx.fillStyle="#1b8f88";roundRect(ctx,-27,-119,58,78,20);ctx.fill();ctx.fillStyle="#fff";ctx.font="950 12px system-ui";ctx.textAlign="center";ctx.fillText("WH",2,-76);ctx.fillStyle="#efc3a9";ctx.beginPath();ctx.arc(2,-151,35,0,Math.PI*2);ctx.fill();ctx.fillStyle="#17223b";ctx.beginPath();ctx.arc(2,-162,36,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";for(const eye of [2,21]){ctx.beginPath();ctx.ellipse(eye,-151,8,10,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#126b68";ctx.beginPath();ctx.arc(eye+2,-150,5,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff"}ctx.restore()}
+function drawWH(){const point=screenX(state.playerX),moving=!paused()&&(keys.left||keys.right),step=moving?Math.sin(state.walkTime)*11:0,bob=moving?Math.sin(state.walkTime*2)*2:0;if(assetManager.has("characters.wh")){ctx.fillStyle="rgba(8,7,13,.28)";ctx.beginPath();ctx.ellipse(point,groundY+5,34,10,0,0,Math.PI*2);ctx.fill();assetManager.draw(ctx,"characters.wh",{x:point,y:groundY+3+bob,height:176,anchorX:.5,anchorY:1,flipX:state.direction===-1});return}ctx.save();ctx.translate(point,groundY-2);ctx.scale(state.direction,1);ctx.strokeStyle="#111522";ctx.lineWidth=9;ctx.beginPath();ctx.moveTo(-8,-48);ctx.lineTo(-12-step*.55,-5);ctx.moveTo(9,-48);ctx.lineTo(14+step*.55,-5);ctx.stroke();ctx.fillStyle="#1b8f88";roundRect(ctx,-27,-119,58,78,20);ctx.fill();ctx.fillStyle="#fff";ctx.font="950 12px system-ui";ctx.textAlign="center";ctx.fillText("WH",2,-76);ctx.fillStyle="#efc3a9";ctx.beginPath();ctx.arc(2,-151,35,0,Math.PI*2);ctx.fill();ctx.fillStyle="#17223b";ctx.beginPath();ctx.arc(2,-162,36,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";for(const eye of [2,21]){ctx.beginPath();ctx.ellipse(eye,-151,8,10,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#126b68";ctx.beginPath();ctx.arc(eye+2,-150,5,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff"}ctx.restore()}
 function roundRect(context,x,y,width,height,radius){radius=Math.min(radius,width/2,height/2);context.beginPath();context.moveTo(x+radius,y);context.arcTo(x+width,y,x+width,y+height,radius);context.arcTo(x+width,y+height,x,y+height,radius);context.arcTo(x,y+height,x,y,radius);context.arcTo(x,y,x+width,y,radius);context.closePath()}

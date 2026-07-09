@@ -1,3 +1,4 @@
+import { assetManager } from "./asset-manager.mjs";
 import { checkCountingStageAnswer, createCountingRun } from "./counting-logic.mjs";
 
 const canvas = document.querySelector("#map41-canvas");
@@ -85,6 +86,7 @@ let state = makeState();
 let width = 1280;
 let height = 720;
 
+assetManager.loadAll().catch((error) => console.warn(error));
 resize();
 renderInventory();
 requestAnimationFrame(loop);
@@ -574,23 +576,23 @@ function drawSun(now) {
 }
 
 function drawSchool() {
+  const x = width * 0.5;
+  const y = height * 0.62;
+  const buildingHeight = Math.min(470, height * 0.64);
+  if (assetManager.draw(ctx, "buildings.schoolBuilding", { x, y, height: buildingHeight, anchorX: 0.5, anchorY: 1, alpha: 0.96 })) return;
   ctx.save();
-  ctx.translate(width * 0.08, height * 0.31);
-  ctx.fillStyle = "rgba(255,255,255,.72)";
-  ctx.fillRect(0, 18, 230, 120);
+  ctx.translate(x, y - buildingHeight * 0.62);
+  ctx.fillStyle = "rgba(255,255,255,.78)";
+  ctx.fillRect(-260, 20, 520, 235);
   ctx.fillStyle = "#ffbd73";
   ctx.beginPath();
-  ctx.moveTo(-8, 18);
-  ctx.lineTo(115, -42);
-  ctx.lineTo(238, 18);
+  ctx.moveTo(-290, 20);
+  ctx.lineTo(0, -120);
+  ctx.lineTo(290, 20);
   ctx.closePath();
   ctx.fill();
   ctx.fillStyle = "#7fdcff";
-  for (let i = 0; i < 4; i += 1) ctx.fillRect(24 + i * 50, 44, 26, 22);
-  ctx.fillStyle = "#234156";
-  ctx.font = "900 15px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("SCHOOL", 115, 102);
+  for (let i = -4; i <= 4; i += 1) ctx.fillRect(i * 48 - 13, 78, 26, 24);
   ctx.restore();
 }
 
@@ -606,39 +608,34 @@ function drawPath() {
 }
 
 function drawTrees(now) {
-  for (let i = 0; i < 5; i += 1) {
-    const x = width * (0.1 + i * 0.2);
-    const y = height * (0.52 + (i % 2) * 0.04);
+  const layout = [
+    [0.08, 0.6, 142, 0.94],
+    [0.19, 0.55, 172, 0.9],
+    [0.34, 0.57, 150, 0.92],
+    [0.78, 0.55, 180, 0.9],
+    [0.91, 0.6, 150, 0.94]
+  ];
+  for (let i = 0; i < layout.length; i += 1) {
+    const [rx, ry, treeHeight, alpha] = layout[i];
+    const x = width * rx + Math.sin(now / 900 + i) * 1.2;
+    const y = height * ry;
+    if (assetManager.draw(ctx, "props.tree", { x, y, height: treeHeight, anchorX: 0.5, anchorY: 1, alpha })) continue;
     ctx.fillStyle = "#8a5a35";
-    ctx.fillRect(x - 8, y - 5, 16, 70);
+    ctx.fillRect(x - 8, y - 65, 16, 70);
     ctx.fillStyle = i % 2 ? "#2da85a" : "#47bd62";
     ctx.beginPath();
-    ctx.arc(x + Math.sin(now / 700 + i) * 2, y - 25, 38, 0, Math.PI * 2);
+    ctx.arc(x, y - 90, 38, 0, Math.PI * 2);
     ctx.fill();
   }
 }
 
-function drawCyclists(now) {
-  const bikeX = (width * 0.1 + (now * 0.05) % (width * 0.82));
-  drawBikeKid(bikeX, height * 0.76, "#69a7ff");
-  const inlineX = width - ((now * 0.062) % (width * 0.78)) - width * 0.08;
-  drawInlineKid(inlineX, height * 0.64, "#ff7ba8");
+function drawCyclists() {
+  drawBikeKid(width * 0.16, height * 0.76, "#69a7ff");
+  drawInlineKid(width * 0.86, height * 0.66, "#ff7ba8");
 }
 
 function drawPhotoZone() {
-  ctx.save();
-  ctx.translate(width * 0.62, height * 0.61);
-  ctx.fillStyle = "rgba(255,255,255,.58)";
-  ctx.beginPath();
-  ctx.roundRect(-190, -118, 410, 185, 28);
-  ctx.fill();
-  ctx.strokeStyle = "rgba(35,65,86,.12)";
-  ctx.stroke();
-  ctx.fillStyle = "#234156";
-  ctx.font = "900 13px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("촬영 대기 구역", 0, -88);
-  ctx.restore();
+  // The photo waiting area should feel like open park space, not a UI panel.
 }
 
 function drawWorldObjects(now) {
@@ -673,12 +670,13 @@ function getResolutionKids() {
 }
 
 function drawTeacher(x, y) {
-  ctx.save();
-  ctx.translate(x, y);
   ctx.fillStyle = "rgba(35,65,86,.13)";
   ctx.beginPath();
-  ctx.ellipse(0, 48, 28, 8, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 8, 28, 8, 0, 0, Math.PI * 2);
   ctx.fill();
+  if (assetManager.draw(ctx, "characters.mathTeacher", { x, y: y + 12, height: 145, anchorX: 0.5, anchorY: 1 })) return;
+  ctx.save();
+  ctx.translate(x, y);
   ctx.fillStyle = "#f4c7a8";
   ctx.beginPath();
   ctx.arc(0, -27, 17, 0, Math.PI * 2);
@@ -691,14 +689,15 @@ function drawTeacher(x, y) {
   ctx.beginPath();
   ctx.roundRect(-16, -10, 32, 48, 10);
   ctx.fill();
-  ctx.fillStyle = "#fff";
-  ctx.font = "900 10px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("선생님", 0, 58);
   ctx.restore();
 }
 
 function drawPlanningBoard(x, y) {
+  ctx.fillStyle = "rgba(35,65,86,.13)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 50, 38, 9, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "props.filmingPlanEasel", { x, y: y + 62, height: 148, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = "#8a5a35";
@@ -714,36 +713,119 @@ function drawPlanningBoard(x, y) {
   ctx.fillStyle = "#1b9d58";
   ctx.font = "900 10px system-ui";
   ctx.textAlign = "center";
-  ctx.fillText("촬영 계획판", 0, -10);
-  ctx.fillStyle = "#4a6675";
-  ctx.font = "800 9px system-ui";
-  ctx.fillText("정보 모은 뒤 Space", 0, 8);
+  ctx.fillText("촬영계획판", 0, -10);
   ctx.restore();
 }
 
 function drawChild(x, y, kid, known) {
-  ctx.save();
-  ctx.translate(x, y);
   ctx.fillStyle = "rgba(35,65,86,.12)";
   ctx.beginPath();
-  ctx.ellipse(0, 42, 22, 7, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 42, 22, 7, 0, 0, Math.PI * 2);
   ctx.fill();
+  if (known) {
+    drawKnownChild(x, y, kid);
+    return;
+  }
+  ctx.save();
+  ctx.translate(x, y);
   ctx.fillStyle = "#f4c7a8";
   ctx.beginPath();
   ctx.arc(0, -27, 14, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = known ? kid.color : "#f1c15d";
+  ctx.fillStyle = "#f1c15d";
   ctx.beginPath();
   ctx.roundRect(-13, -11, 26, 42, 10);
   ctx.fill();
   ctx.fillStyle = "#234156";
   ctx.font = "900 9px system-ui";
   ctx.textAlign = "center";
-  ctx.fillText(known ? kid.gender : "?", 0, 48);
+  ctx.fillText("?", 0, 48);
+  ctx.restore();
+}
+
+function drawKnownChild(x, y, kid) {
+  const index = Math.max(0, kids.findIndex((item) => item.id === kid.id));
+  const girl = isGirlKid(kid.id);
+  const sprite = girl ? "characters.elementaryGirl" : "characters.elementaryBoy";
+  const heightOffset = [-4, 3, -1, 5, 0, 4, -3][index % 7];
+  const spriteHeight = (girl ? 112 : 118) + heightOffset;
+  const flipX = index % 2 === 1;
+  const ok = assetManager.draw(ctx, sprite, { x, y: y + 45, height: spriteHeight, anchorX: 0.5, anchorY: 1, flipX });
+  if (!ok) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = "#f4c7a8";
+    ctx.beginPath();
+    ctx.arc(0, -27, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = kid.color;
+    ctx.beginPath();
+    ctx.roundRect(-13, -11, 26, 42, 10);
+    ctx.fill();
+    ctx.restore();
+  }
+  drawChildAccent(x, y, index, girl, flipX);
+}
+
+function isGirlKid(id) {
+  return id === "seoyeon" || id === "harin" || id === "yuna";
+}
+
+function drawChildAccent(x, y, index, girl, flipX) {
+  const colors = ["#ff7ba8", "#69a7ff", "#ffd166", "#8f7dff", "#2da85a", "#ff9f68", "#65d7c6"];
+  const color = colors[index % colors.length];
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(flipX ? -1 : 1, 1);
+  ctx.fillStyle = color;
+  if (girl) {
+    ctx.beginPath();
+    ctx.moveTo(-13, -58);
+    ctx.lineTo(-26, -50);
+    ctx.lineTo(-14, -44);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-9, -57);
+    ctx.lineTo(4, -49);
+    ctx.lineTo(-8, -44);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    ctx.beginPath();
+    ctx.roundRect(-15, -61, 30, 9, 4);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(9, -57, 15, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawPhotoPlanLabel(x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = "rgba(255,248,223,.96)";
+  ctx.strokeStyle = "rgba(35,65,86,.22)";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(-54, -14, 108, 28, 9);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = "#1b6f47";
+  ctx.font = "900 14px system-ui";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("촬영계획판", 0, 1);
   ctx.restore();
 }
 
 function drawBikeKid(x, y, color) {
+  ctx.fillStyle = "rgba(35,65,86,.14)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 9, 45, 10, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "characters.bicycleStudent", { x, y: y + 14, height: 142, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.strokeStyle = "#234156";
@@ -764,6 +846,11 @@ function drawBikeKid(x, y, color) {
 }
 
 function drawInlineKid(x, y, color) {
+  ctx.fillStyle = "rgba(35,65,86,.13)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 43, 32, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "characters.inlineSkaterStudent", { x, y: y + 48, height: 138, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   drawTinyKid(0, 0, color);
@@ -795,13 +882,14 @@ function drawTinyKid(x, y, color) {
 function drawWH() {
   const x = state.player.x * width;
   const y = state.player.y * height;
+  ctx.fillStyle = "rgba(35,65,86,.16)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 5, 27, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "characters.wh", { x, y: y + 8, height: 150, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(0.92, 0.92);
-  ctx.fillStyle = "rgba(35,65,86,.16)";
-  ctx.beginPath();
-  ctx.ellipse(0, -8, 25, 8, 0, 0, Math.PI * 2);
-  ctx.fill();
   ctx.fillStyle = "#1b8f88";
   ctx.beginPath();
   ctx.roundRect(-22, -72, 44, 54, 13);

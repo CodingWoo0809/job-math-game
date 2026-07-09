@@ -382,3 +382,21 @@
     padding-left: 18px;
   }
 }
+
+
+/* Asset-backed start preview. */
+.market-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    url("./assets/characters/sprites/finance_manager.png") 41% 78% / auto 116px no-repeat,
+    url("./assets/characters/sprites/wh.png") 57% 84% / auto 138px no-repeat,
+    url("./assets/buildings/sprites/market_operations_office.png") 78% 76% / auto 205px no-repeat,
+    url("./assets/props/sprites/job_math_rpg_race_arch.png") 15% 77% / auto 196px no-repeat,
+    url("./assets/props/sprites/closed_iron_gate.png") 93% 86% / auto 115px no-repeat;
+}
+
+.market-hero .market-caption { z-index: 6; }

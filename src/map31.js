@@ -1,5 +1,6 @@
 import { advanceStreak, buildOptions, createChallengeSession } from "./solid-net-data.mjs";
 import { renderNetVisual, renderSightDrawing } from "./solid-visuals.mjs";
+import { drawFutureTransitionRoom, ensureChapter3RoomAssets } from "./chapter3-room-visuals.mjs";
 
 const canvas = document.querySelector("#map31-canvas");
 const ctx = canvas.getContext("2d");
@@ -39,6 +40,7 @@ let state = makeState();
 let width = 1280;
 let height = 720;
 
+ensureChapter3RoomAssets();
 resize();
 requestAnimationFrame(loop);
 window.addEventListener("resize", resize);
@@ -136,7 +138,7 @@ function loop(now) {
   const dt = Math.min(0.034, (now - state.lastTime) / 1000 || 0);
   state.lastTime = now;
   if (state.doorProgress > 0) state.doorProgress = Math.min(1, state.doorProgress + dt * 0.8);
-  draw();
+  draw(now);
   requestAnimationFrame(loop);
 }
 
@@ -150,30 +152,20 @@ function resize() {
   ctx.setTransform(density, 0, 0, density, 0, 0);
 }
 
-function draw() {
+function draw(now) {
   const density = Math.min(2, devicePixelRatio || 1);
   ctx.setTransform(density, 0, 0, density, 0, 0);
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, "#111d28");
-  gradient.addColorStop(1, "#05090e");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-  ctx.strokeStyle = "#243c48";
-  ctx.lineWidth = 2;
-  for (let inset = 35; inset < Math.min(width, height) * 0.5; inset += 70) ctx.strokeRect(inset, inset * 0.55, width - inset * 2, height - inset * 1.1);
-  ctx.fillStyle = "#0a131b";
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(width * 0.5, height * 0.47);
-  ctx.lineTo(0, height);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(width, 0);
-  ctx.lineTo(width * 0.5, height * 0.47);
-  ctx.lineTo(width, height);
-  ctx.fill();
-  drawDoor();
-  drawRoomWH();
+  drawFutureTransitionRoom(ctx, {
+    width,
+    height,
+    now,
+    doorProgress: state.doorProgress,
+    whXRatio: 0.5,
+    whYRatio: 0.8,
+    whHeight: 158,
+    doorXRatio: 0.5,
+    doorHeightRatio: 0.58
+  });
 }
 
 function drawDoor() {

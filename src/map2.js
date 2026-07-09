@@ -792,24 +792,12 @@ function drawTerminal() {
 function drawGate() {
   const x = sx(world.gateX);
   if (x < -180 || x > viewWidth + 180) return;
-  if (assetManager.draw(ctx, "props.lockedIronGate", {
+  const gateKey = state.gateOpen || state.gateOpening || state.gateLift > 0 ? "props.openIronGate" : "props.closedIronGate";
+  if (assetManager.draw(ctx, gateKey, {
     x,
-    y: groundY + 8 - state.gateLift,
-    height: 238,
-    alpha: state.gateOpen ? 0.9 : 1
+    y: groundY + 8,
+    height: 238
   })) {
-    ctx.save();
-    ctx.fillStyle = "rgba(255, 245, 214, 0.94)";
-    ctx.strokeStyle = "#26304f";
-    ctx.lineWidth = 2.5;
-    roundRect(ctx, x - 86, groundY - 274 - state.gateLift, 172, 31, 10);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "#563756";
-    ctx.font = "900 12px system-ui";
-    ctx.textAlign = "center";
-    ctx.fillText(state.gateOpen ? "?? ?? ? ?? ??" : "?? ? ? ?? ??", x, groundY - 254 - state.gateLift);
-    ctx.restore();
     return;
   }
 

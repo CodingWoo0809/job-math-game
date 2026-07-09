@@ -1,3 +1,4 @@
+import { assetManager } from "./asset-manager.mjs";
 import { CANDY_GAMES, checkCandyGameAnswer, formatProbabilityPercent, getCandyGameProbabilities } from "./probability-logic.mjs";
 
 const canvas = document.querySelector("#map42-canvas");
@@ -74,6 +75,7 @@ let state = makeState();
 let width = 1280;
 let height = 720;
 
+assetManager.loadAll().catch((error) => console.warn(error));
 resize();
 renderInventory();
 ui.visual.innerHTML = renderProbabilityVisual();
@@ -496,6 +498,9 @@ function drawStreet() {
 }
 
 function drawSchoolGate() {
+  const x = width * 0.18;
+  const y = height * 0.47;
+  if (assetManager.draw(ctx, "buildings.schoolBuilding", { x, y, height: Math.min(255, height * 0.35), anchorX: 0.5, anchorY: 1, alpha: 0.82 })) return;
   ctx.save();
   ctx.translate(width * 0.07, height * 0.34);
   ctx.fillStyle = "rgba(255,255,255,.74)";
@@ -507,16 +512,13 @@ function drawSchoolGate() {
   ctx.lineTo(218, 32);
   ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = "#7fdcff";
-  for (let i = 0; i < 4; i += 1) ctx.fillRect(22 + i * 45, 58, 24, 20);
-  ctx.fillStyle = "#234156";
-  ctx.font = "900 14px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("SCHOOL", 105, 116);
   ctx.restore();
 }
 
 function drawStationeryShop() {
+  const x = width * 0.42;
+  const y = height * 0.59;
+  if (assetManager.draw(ctx, "buildings.stationeryStore", { x, y, height: Math.min(320, height * 0.44), anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(width * 0.42, height * 0.36);
   ctx.fillStyle = "#fff8df";
@@ -526,23 +528,20 @@ function drawStationeryShop() {
   ctx.roundRect(-155, -18, 310, 190, 18);
   ctx.fill();
   ctx.stroke();
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(-126, 46, 78, 86);
-  ctx.fillRect(48, 46, 78, 86);
-  ctx.fillStyle = "#ff7ba8";
-  for (let i = 0; i < 7; i += 1) ctx.fillRect(-155 + i * 44, -48, 22, 42);
-  ctx.fillStyle = "#fff";
-  for (let i = 0; i < 7; i += 1) ctx.fillRect(-133 + i * 44, -48, 22, 42);
-  ctx.fillStyle = "#234156";
-  ctx.font = "950 18px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("학교앞 문구점", 0, 22);
   ctx.restore();
 }
 
 function drawCandyGameTable(now) {
+  const x = choiceBoard.x * width;
+  const y = choiceBoard.y * height;
+  const glow = 0.5 + Math.sin(now / 300) * 0.12;
+  ctx.fillStyle = `rgba(255, 123, 168, ${0.08 + glow * 0.08})`;
+  ctx.beginPath();
+  ctx.ellipse(x, y + 72, 150, 25, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "props.candyGameTable", { x, y: y + 110, width: 330, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
-  ctx.translate(choiceBoard.x * width, choiceBoard.y * height);
+  ctx.translate(x, y);
   ctx.fillStyle = "#8a5a35";
   ctx.fillRect(-145, 52, 290, 18);
   ctx.fillRect(-120, 66, 18, 70);
@@ -551,22 +550,6 @@ function drawCandyGameTable(now) {
   ctx.beginPath();
   ctx.roundRect(-132, -18, 264, 78, 16);
   ctx.fill();
-  ctx.strokeStyle = "rgba(35,65,86,.14)";
-  ctx.stroke();
-  ctx.fillStyle = "#1b9d58";
-  ctx.font = "900 12px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("사탕 게임 선택대", 0, 10);
-  ctx.fillStyle = "#4a6675";
-  ctx.font = "800 10px system-ui";
-  ctx.fillText("정보 모은 뒤 Space", 0, 32);
-  const glow = 0.5 + Math.sin(now / 300) * 0.12;
-  for (let i = 0; i < 5; i += 1) {
-    ctx.fillStyle = `rgba(255, 123, 168, ${glow})`;
-    ctx.beginPath();
-    ctx.arc(-68 + i * 34, -34 + (i % 2) * 6, 10, 0, Math.PI * 2);
-    ctx.fill();
-  }
   ctx.restore();
 }
 
@@ -609,9 +592,9 @@ function drawKids(now) {
   const positions = state.resolving
     ? getResolutionKidPositions()
     : [[-34, 0], [0, -10], [34, 2], [68, -8]];
-  const colors = ["#69a7ff", "#ff7ba8", "#77c6ff", "#ff94b9"];
   positions.forEach(([dx, dy], index) => {
-    drawChild(baseX + dx, baseY + dy + Math.sin(now / 250 + index) * 1.4, colors[index], index);
+    const girl = index === 1 || index === 3;
+    drawChild(baseX + dx, baseY + dy + Math.sin(now / 250 + index) * 1.4, girl, index);
   });
 }
 
@@ -626,29 +609,50 @@ function getResolutionKidPositions() {
   ]);
 }
 
-function drawChild(x, y, color, index) {
-  ctx.save();
-  ctx.translate(x, y);
+function drawChild(x, y, girl, index) {
   ctx.fillStyle = "rgba(35,65,86,.12)";
   ctx.beginPath();
-  ctx.ellipse(0, 42, 21, 7, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 42, 21, 7, 0, 0, Math.PI * 2);
   ctx.fill();
+  const key = girl ? "characters.elementaryGirl" : "characters.elementaryBoy";
+  const height = (girl ? 108 : 114) + [0, 4, -3, 3][index % 4];
+  if (assetManager.draw(ctx, key, { x, y: y + 45, height, anchorX: 0.5, anchorY: 1, flipX: index % 2 === 1 })) {
+    drawKidMood(x, y, index);
+    return;
+  }
+  ctx.save();
+  ctx.translate(x, y);
   ctx.fillStyle = "#f4c7a8";
   ctx.beginPath();
   ctx.arc(0, -27, 14, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = color;
+  ctx.fillStyle = girl ? "#ff7ba8" : "#69a7ff";
   ctx.beginPath();
   ctx.roundRect(-13, -11, 26, 42, 10);
   ctx.fill();
   ctx.fillStyle = "#234156";
   ctx.font = "900 9px system-ui";
   ctx.textAlign = "center";
-  ctx.fillText(index === 0 ? "?" : "ㅠ", 0, 48);
+  ctx.fillText("?", 0, 48);
+  ctx.restore();
+}
+
+function drawKidMood(x, y, index) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = "rgba(35,65,86,.86)";
+  ctx.font = "900 11px system-ui";
+  ctx.textAlign = "center";
+  ctx.fillText(index % 2 === 0 ? "?" : "??", 0, 54);
   ctx.restore();
 }
 
 function drawFairnessSign(x, y) {
+  ctx.fillStyle = "rgba(35,65,86,.13)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 58, 34, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "props.gameGuideEasel", { x, y: y + 76, height: 142, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = "#8a5a35";
@@ -660,13 +664,6 @@ function drawFairnessSign(x, y) {
   ctx.roundRect(-54, -30, 108, 58, 10);
   ctx.fill();
   ctx.stroke();
-  ctx.fillStyle = "#1b9d58";
-  ctx.font = "900 10px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("공정한 도구", 0, -6);
-  ctx.fillStyle = "#4a6675";
-  ctx.font = "800 8px system-ui";
-  ctx.fillText("확률 계산 안내", 0, 12);
   ctx.restore();
 }
 
@@ -674,6 +671,12 @@ function drawGameCard(card) {
   const x = card.x * width;
   const y = card.y * height;
   const known = state.inspectedCards.has(card.id);
+  const tableKey = card.gameId === 1 ? "props.cardGameTable" : card.gameId === 2 ? "props.coinGameTable" : "props.diceGameTable";
+  ctx.fillStyle = known ? "rgba(45,168,90,.16)" : "rgba(35,65,86,.1)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 58, 54, 12, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, tableKey, { x, y: y + 74, width: 166, anchorX: 0.5, anchorY: 1, alpha: known ? 1 : 0.96 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = known ? "#fff0f5" : "#fff8df";
@@ -687,22 +690,20 @@ function drawGameCard(card) {
   ctx.font = "950 24px system-ui";
   ctx.textAlign = "center";
   ctx.fillText(String(card.gameId), 0, -14);
-  ctx.fillStyle = known ? "#1b9d58" : "#d26d2f";
-  ctx.font = "900 10px system-ui";
-  ctx.fillText(known ? "확인됨" : "조건 확인", 0, 18);
   ctx.restore();
 }
 
 function drawWH() {
   const x = state.player.x * width;
   const y = state.player.y * height;
+  ctx.fillStyle = "rgba(35,65,86,.16)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 5, 27, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "characters.wh", { x, y: y + 8, height: 150, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(0.92, 0.92);
-  ctx.fillStyle = "rgba(35,65,86,.16)";
-  ctx.beginPath();
-  ctx.ellipse(0, -8, 25, 8, 0, 0, Math.PI * 2);
-  ctx.fill();
   ctx.fillStyle = "#1b8f88";
   ctx.beginPath();
   ctx.roundRect(-22, -72, 44, 54, 13);
@@ -715,10 +716,6 @@ function drawWH() {
   ctx.beginPath();
   ctx.arc(0, -103, 25, Math.PI, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = "#fff";
-  ctx.font = "900 10px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("WH", 0, -39);
   ctx.restore();
 }
 

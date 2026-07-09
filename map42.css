@@ -791,3 +791,7 @@ body {
     width: calc(100% - 28px);
   }
 }
+
+
+/* Asset-backed start preview. */
+.probability-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/buildings/sprites/school_building.png") 13% 63%/auto 190px no-repeat,url("./assets/buildings/sprites/stationery_store.png") 39% 73%/auto 230px no-repeat,url("./assets/characters/sprites/wh.png") 24% 90%/auto 136px no-repeat,url("./assets/characters/sprites/elementary_boy.png") 66% 88%/auto 112px no-repeat,url("./assets/characters/sprites/elementary_girl.png") 73% 88%/auto 108px no-repeat,url("./assets/props/sprites/game_guide_easel.png") 84% 88%/auto 128px no-repeat,url("./assets/props/sprites/candy_game_table.png") 52% 94%/auto 142px no-repeat}.probability-hero .hero-caption{z-index:6}

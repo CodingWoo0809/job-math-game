@@ -1,3 +1,5 @@
+import { assetManager } from "./asset-manager.mjs";
+import { drawFutureBaseBackdrop, drawFutureWH, ensureChapter3RoomAssets } from "./chapter3-room-visuals.mjs";
 import { checkSolidStageAnswer, createSolidMeasureRun } from "./solid-measure-data.mjs";
 
 const canvas = document.querySelector("#map35-canvas");
@@ -30,6 +32,7 @@ let state = makeState();
 let width = 1280;
 let height = 720;
 
+ensureChapter3RoomAssets();
 resize();
 requestAnimationFrame(loop);
 window.addEventListener("resize", resize);
@@ -231,13 +234,13 @@ function resize() {
 function drawRoom(now) {
   const density = Math.min(2, devicePixelRatio || 1);
   ctx.setTransform(density, 0, 0, density, 0, 0);
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, "#0d1a2a");
-  gradient.addColorStop(0.56, "#07101b");
-  gradient.addColorStop(1, "#03060b");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-  drawContainmentGrid(now);
+  drawFutureBaseBackdrop(ctx, {
+    width,
+    height,
+    now,
+    lineColor: "rgba(101,242,255,.18)",
+    glowColor: "101,242,255"
+  });
   drawRobot(now);
   drawElectricTray(now);
   drawWH(now);
@@ -263,15 +266,31 @@ function drawContainmentGrid(now) {
 }
 
 function drawRobot(now) {
-  const x = width * 0.65;
-  const y = height * 0.48 + Math.sin(now / 310) * 4;
+  const x = width * 0.66;
+  const y = height * 0.76 + Math.sin(now / 310) * 4;
   const mood = state.robotMood;
   ctx.save();
-  ctx.translate(x, y);
+  const glow = ctx.createRadialGradient(x, y - 145, 20, x, y - 145, 210);
+  glow.addColorStop(0, `rgba(184,255,106,${0.16 + mood * 0.16})`);
+  glow.addColorStop(1, "rgba(184,255,106,0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(x - 220, y - 360, 440, 380);
   ctx.fillStyle = "rgba(101,242,255,.16)";
   ctx.beginPath();
-  ctx.ellipse(0, 114, 110, 22, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 6, 92, 20, 0, 0, Math.PI * 2);
   ctx.fill();
+  if (assetManager.has("characters.captorRobot")) {
+    assetManager.draw(ctx, "characters.captorRobot", {
+      x,
+      y,
+      height: Math.min(330, height * 0.46),
+      anchorX: 0.5,
+      anchorY: 1
+    });
+    ctx.restore();
+    return;
+  }
+  ctx.translate(x, y - 114);
   ctx.fillStyle = "#dffcff";
   ctx.strokeStyle = "#65f2ff";
   ctx.lineWidth = 3;
@@ -289,13 +308,6 @@ function drawRobot(now) {
   ctx.arc(-28, -26, 6 + mood * 3, 0, Math.PI * 2);
   ctx.arc(28, -26, 6 + mood * 3, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = "#07101b";
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  const mouthY = 9;
-  ctx.moveTo(-22, mouthY);
-  ctx.quadraticCurveTo(0, mouthY + 18 * mood - 8 * (1 - mood), 22, mouthY);
-  ctx.stroke();
   ctx.fillStyle = "#0a3141";
   ctx.font = "900 16px system-ui";
   ctx.textAlign = "center";
@@ -328,26 +340,12 @@ function drawElectricTray(now) {
 }
 
 function drawWH(now) {
-  const x = width * 0.34;
-  const y = height * 0.82 - Math.sin(now / 190) * 2;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(0.92, 0.92);
-  ctx.fillStyle = "#202a36";
-  ctx.beginPath();
-  ctx.roundRect(-22, -72, 44, 54, 13);
-  ctx.fill();
-  ctx.fillStyle = "#efc3a9";
-  ctx.beginPath();
-  ctx.arc(0, -94, 24, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#17223b";
-  ctx.beginPath();
-  ctx.arc(0, -103, 25, Math.PI, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#65f2ff";
-  ctx.font = "900 10px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("WH", 0, -39);
-  ctx.restore();
+  drawFutureWH(ctx, {
+    width,
+    height,
+    now,
+    xRatio: 0.34,
+    yRatio: 0.82,
+    spriteHeight: 158
+  });
 }
