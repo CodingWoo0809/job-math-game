@@ -795,3 +795,10 @@ body {
 
 /* Asset-backed start preview. */
 .probability-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/buildings/sprites/school_building.png") 13% 63%/auto 190px no-repeat,url("./assets/buildings/sprites/stationery_store.png") 39% 73%/auto 230px no-repeat,url("./assets/characters/sprites/wh.png") 24% 90%/auto 136px no-repeat,url("./assets/characters/sprites/elementary_boy.png") 66% 88%/auto 112px no-repeat,url("./assets/characters/sprites/elementary_girl.png") 73% 88%/auto 108px no-repeat,url("./assets/props/sprites/game_guide_easel.png") 84% 88%/auto 128px no-repeat,url("./assets/props/sprites/candy_game_table.png") 52% 94%/auto 142px no-repeat}.probability-hero .hero-caption{z-index:6}
+
+
+/* Renewed asset-backed waiting screen for 4map2. */
+.probability-start-card{background:rgba(255,255,255,.94);box-shadow:0 28px 90px rgba(36,107,89,.22)}
+.probability-hero{background:linear-gradient(180deg,#a4eaff 0 43%,#f6fdff 44%,#e1f5cf 45%,#82d46d 100%)}
+.probability-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/buildings/sprites/school_building.png") 13% 62%/auto 180px no-repeat,url("./assets/buildings/sprites/stationery_store.png") 40% 72%/auto 240px no-repeat,url("./assets/characters/sprites/stationery_store_owner.png") 22% 88%/auto 130px no-repeat,url("./assets/characters/sprites/wh.png") 30% 91%/auto 136px no-repeat,url("./assets/props/sprites/card_game_table.png") 48% 88%/auto 106px no-repeat,url("./assets/props/sprites/coin_game_table.png") 62% 88%/auto 106px no-repeat,url("./assets/props/sprites/dice_game_table.png") 76% 88%/auto 106px no-repeat,url("./assets/characters/sprites/elementary_boy.png") 71% 95%/auto 104px no-repeat,url("./assets/characters/sprites/elementary_girl.png") 84% 94%/auto 102px no-repeat,url("./assets/props/sprites/game_guide_easel.png") 91% 86%/auto 122px no-repeat,url("./assets/props/sprites/candy_game_table.png") 57% 98%/auto 148px no-repeat}
+.probability-hero .hero-caption{z-index:6}

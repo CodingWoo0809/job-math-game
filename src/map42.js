@@ -39,13 +39,13 @@ const ui = {
 };
 
 const uncle = Object.freeze({ id: "uncle", label: "문구점 아저씨", x: 0.22, y: 0.6 });
-const kids = Object.freeze({ id: "kids", label: "속상한 초등학생들", x: 0.75, y: 0.66 });
+const kids = Object.freeze({ id: "kids", label: "속상한 초등학생들", x: 0.56, y: 0.82 });
 const fairnessSign = Object.freeze({ id: "fairness", label: "공정한 도구 안내판", x: 0.36, y: 0.52 });
-const choiceBoard = Object.freeze({ id: "choice-board", label: "사탕 게임 선택대", x: 0.55, y: 0.79 });
+const choiceBoard = Object.freeze({ id: "choice-board", label: "사탕 게임 선택대", x: 0.56, y: 0.86 });
 const gameCards = Object.freeze([
-  { id: "game-1", gameId: 1, label: "상황 1 카드", x: 0.46, y: 0.58 },
+  { id: "game-1", gameId: 1, label: "상황 1 카드", x: 0.22, y: 0.58 },
   { id: "game-2", gameId: 2, label: "상황 2 카드", x: 0.58, y: 0.58 },
-  { id: "game-3", gameId: 3, label: "상황 3 카드", x: 0.70, y: 0.58 }
+  { id: "game-3", gameId: 3, label: "상황 3 카드", x: 0.94, y: 0.58 }
 ]);
 
 const textbookEntries = Object.freeze([
@@ -555,18 +555,19 @@ function drawCandyGameTable(now) {
 
 function drawWorldObjects(now) {
   drawUncle(uncle.x * width, uncle.y * height);
-  drawKids(now);
   drawFairnessSign(fairnessSign.x * width, fairnessSign.y * height);
   for (const card of gameCards) drawGameCard(card);
+  drawKids(now);
 }
 
 function drawUncle(x, y) {
-  ctx.save();
-  ctx.translate(x, y);
   ctx.fillStyle = "rgba(35,65,86,.13)";
   ctx.beginPath();
-  ctx.ellipse(0, 48, 30, 8, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 49, 30, 8, 0, 0, Math.PI * 2);
   ctx.fill();
+  if (assetManager.draw(ctx, "characters.stationeryStoreOwner", { x, y: y + 54, height: 150, anchorX: 0.5, anchorY: 1 })) return;
+  ctx.save();
+  ctx.translate(x, y);
   ctx.fillStyle = "#f0ba91";
   ctx.beginPath();
   ctx.arc(0, -28, 18, 0, Math.PI * 2);
@@ -579,33 +580,26 @@ function drawUncle(x, y) {
   ctx.beginPath();
   ctx.roundRect(-17, -10, 34, 50, 10);
   ctx.fill();
-  ctx.fillStyle = "#fff";
-  ctx.font = "900 9px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("아저씨", 0, 58);
   ctx.restore();
 }
 
 function drawKids(now) {
-  const baseX = kids.x * width;
-  const baseY = kids.y * height;
   const positions = state.resolving
     ? getResolutionKidPositions()
-    : [[-34, 0], [0, -10], [34, 2], [68, -8]];
-  positions.forEach(([dx, dy], index) => {
+    : [[0.18, 0.83], [0.43, 0.88], [0.72, 0.83], [0.92, 0.88]];
+  positions.forEach(([px, py], index) => {
     const girl = index === 1 || index === 3;
-    drawChild(baseX + dx, baseY + dy + Math.sin(now / 250 + index) * 1.4, girl, index);
+    drawChild(px * width, py * height + Math.sin(now / 250 + index) * 1.4, girl, index);
   });
 }
 
 function getResolutionKidPositions() {
   const progress = easeOutCubic(state.resolutionProgress);
-  const start = [[-34, 0], [0, -10], [34, 2], [68, -8]];
-  const targetX = gameCards[2].x * width - kids.x * width;
-  const targetY = gameCards[2].y * height - kids.y * height + 24;
+  const start = [[0.18, 0.83], [0.43, 0.88], [0.72, 0.83], [0.92, 0.88]];
+  const target = gameCards[2];
   return start.map(([sx, sy], index) => [
-    lerp(sx, targetX - 48 + index * 28, progress),
-    lerp(sy, targetY + (index % 2) * 8, progress)
+    lerp(sx, target.x - 0.12 + index * 0.08, progress),
+    lerp(sy, target.y + 0.16 + (index % 2) * 0.03, progress)
   ]);
 }
 
@@ -616,10 +610,7 @@ function drawChild(x, y, girl, index) {
   ctx.fill();
   const key = girl ? "characters.elementaryGirl" : "characters.elementaryBoy";
   const height = (girl ? 108 : 114) + [0, 4, -3, 3][index % 4];
-  if (assetManager.draw(ctx, key, { x, y: y + 45, height, anchorX: 0.5, anchorY: 1, flipX: index % 2 === 1 })) {
-    drawKidMood(x, y, index);
-    return;
-  }
+  if (assetManager.draw(ctx, key, { x, y: y + 45, height, anchorX: 0.5, anchorY: 1, flipX: index % 2 === 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = "#f4c7a8";
@@ -630,21 +621,11 @@ function drawChild(x, y, girl, index) {
   ctx.beginPath();
   ctx.roundRect(-13, -11, 26, 42, 10);
   ctx.fill();
-  ctx.fillStyle = "#234156";
-  ctx.font = "900 9px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("?", 0, 48);
   ctx.restore();
 }
 
-function drawKidMood(x, y, index) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.fillStyle = "rgba(35,65,86,.86)";
-  ctx.font = "900 11px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText(index % 2 === 0 ? "?" : "??", 0, 54);
-  ctx.restore();
+function drawKidMood() {
+  // Mood marks were removed so students stay visually clean on the map.
 }
 
 function drawFairnessSign(x, y) {
@@ -672,11 +653,12 @@ function drawGameCard(card) {
   const y = card.y * height;
   const known = state.inspectedCards.has(card.id);
   const tableKey = card.gameId === 1 ? "props.cardGameTable" : card.gameId === 2 ? "props.coinGameTable" : "props.diceGameTable";
+  const tableWidth = Math.min(138, Math.max(86, width * 0.108));
   ctx.fillStyle = known ? "rgba(45,168,90,.16)" : "rgba(35,65,86,.1)";
   ctx.beginPath();
-  ctx.ellipse(x, y + 58, 54, 12, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 58, tableWidth * 0.34, 12, 0, 0, Math.PI * 2);
   ctx.fill();
-  if (assetManager.draw(ctx, tableKey, { x, y: y + 74, width: 166, anchorX: 0.5, anchorY: 1, alpha: known ? 1 : 0.96 })) return;
+  if (assetManager.draw(ctx, tableKey, { x, y: y + 76, width: tableWidth, anchorX: 0.5, anchorY: 1, alpha: known ? 1 : 0.96 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = known ? "#fff0f5" : "#fff8df";

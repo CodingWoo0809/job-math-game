@@ -8,6 +8,7 @@ export const ASSET_MANIFEST = Object.freeze({
     inlineSkaterStudent: "./assets/characters/sprites/inline_skater_student.png",
     financeManager: "./assets/characters/sprites/finance_manager.png",
     mathTeacher: "./assets/characters/sprites/math_teacher.png",
+    stationeryStoreOwner: "./assets/characters/sprites/stationery_store_owner.png",
     operationsTechnician: "./assets/characters/sprites/operations_technician.png",
     truckDriver: "./assets/characters/sprites/truck_driver.png",
     monkey: "./assets/characters/sprites/monkey.png",
