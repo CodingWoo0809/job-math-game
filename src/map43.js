@@ -1,3 +1,4 @@
+import { assetManager } from "./asset-manager.mjs";
 import { GATE_TRAFFIC, TRAFFIC_INTERVALS, checkTrafficReportAnswer, getRelativeFrequencyRows, getTrafficReportSummary, sumCounts } from "./data-organization-logic.mjs";
 
 const canvas = document.querySelector("#map43-canvas");
@@ -69,6 +70,7 @@ let state = makeState();
 let width = 1280;
 let height = 720;
 
+assetManager.loadAll().catch((error) => console.warn(error));
 resize();
 renderInventory();
 ui.visual.innerHTML = renderDataVisual();
@@ -521,26 +523,35 @@ function drawGround() {
 }
 
 function drawSchool() {
-  ctx.save();
-  ctx.translate(width * 0.5, height * 0.28);
-  ctx.fillStyle = "rgba(255,255,255,.78)";
-  ctx.fillRect(-230, 55, 460, 150);
-  ctx.fillStyle = "#ffbd73";
-  ctx.beginPath();
-  ctx.moveTo(-250, 55);
-  ctx.lineTo(0, -50);
-  ctx.lineTo(250, 55);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = "#7fdcff";
-  for (let i = 0; i < 7; i += 1) ctx.fillRect(-170 + i * 55, 88, 30, 24);
-  ctx.fillStyle = "#234156";
-  ctx.font = "950 24px system-ui";
-  ctx.textAlign = "center";
-  ctx.fillText("SCHOOL", 0, 158);
-  drawGateLabel(-150, 220, "정문");
-  drawGateLabel(150, 220, "후문");
-  ctx.restore();
+  const x = width * 0.5;
+  const y = height * 0.61;
+  const buildingHeight = Math.min(430, height * 0.6);
+  const drew = assetManager.draw(ctx, "buildings.schoolBuilding", {
+    x,
+    y,
+    height: buildingHeight,
+    anchorX: 0.5,
+    anchorY: 1,
+    alpha: 0.96
+  });
+  if (!drew) {
+    ctx.save();
+    ctx.translate(width * 0.5, height * 0.28);
+    ctx.fillStyle = "rgba(255,255,255,.78)";
+    ctx.fillRect(-230, 55, 460, 150);
+    ctx.fillStyle = "#ffbd73";
+    ctx.beginPath();
+    ctx.moveTo(-250, 55);
+    ctx.lineTo(0, -50);
+    ctx.lineTo(250, 55);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#7fdcff";
+    for (let i = 0; i < 7; i += 1) ctx.fillRect(-170 + i * 55, 88, 30, 24);
+    ctx.restore();
+  }
+  drawGateLabel(width * 0.36, height * 0.61, "정문");
+  drawGateLabel(width * 0.64, height * 0.61, "후문");
 }
 
 function drawGateLabel(x, y, label) {
@@ -567,10 +578,20 @@ function drawWorldObjects(now) {
 }
 
 function drawTeacher(x, y) {
+  ctx.fillStyle = "rgba(35,65,86,.13)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 48, 28, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "characters.studentAffairsTeacher", { x, y: y + 56, height: 150, anchorX: 0.5, anchorY: 1 })) return;
   drawPerson(x, y, "#2da85a", "선생님");
 }
 
 function drawStudent(x, y) {
+  ctx.fillStyle = "rgba(35,65,86,.13)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 48, 26, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "characters.studentCouncilMember", { x, y: y + 56, height: 146, anchorX: 0.5, anchorY: 1 })) return;
   drawPerson(x, y, "#ffb35b", "학생회");
 }
 
@@ -601,6 +622,25 @@ function drawPerson(x, y, color, label) {
 }
 
 function drawRecordBoard(x, y, label, counts, known) {
+  const key = x > width * 0.55 ? "props.backGateRecordEasel" : "props.frontGateRecordEasel";
+  const drew = assetManager.draw(ctx, key, {
+    x,
+    y: y + 104,
+    height: Math.min(176, height * 0.245),
+    anchorX: 0.5,
+    anchorY: 1,
+    alpha: known ? 1 : 0.96
+  });
+  if (drew) {
+    ctx.save();
+    ctx.globalAlpha = known ? 0.22 : 0.16;
+    ctx.fillStyle = known ? "#2da85a" : "#ffd166";
+    ctx.beginPath();
+    ctx.arc(x + 44, y - 30, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return;
+  }
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = "#8a5a35";
@@ -624,6 +664,24 @@ function drawRecordBoard(x, y, label, counts, known) {
 }
 
 function drawGraphKit(x, y, known) {
+  const drew = assetManager.draw(ctx, "props.mathNote", {
+    x,
+    y: y + 42,
+    height: Math.min(104, height * 0.15),
+    anchorX: 0.5,
+    anchorY: 1,
+    alpha: known ? 1 : 0.94
+  });
+  if (drew) {
+    ctx.save();
+    ctx.globalAlpha = known ? 0.24 : 0.14;
+    ctx.fillStyle = known ? "#2da85a" : "#ffd166";
+    ctx.beginPath();
+    ctx.arc(x + 34, y - 28, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return;
+  }
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = known ? "#f4fff6" : "#fff8df";
@@ -649,6 +707,22 @@ function drawGraphKit(x, y, known) {
 }
 
 function drawReportDesk(x, y, now) {
+  const drew = assetManager.draw(ctx, "props.safetyAssignmentReportDesk", {
+    x,
+    y: y + 106,
+    height: Math.min(182, height * 0.255),
+    anchorX: 0.5,
+    anchorY: 1
+  });
+  if (drew) {
+    ctx.save();
+    ctx.fillStyle = `rgba(45,168,90,${0.35 + Math.sin(now / 300) * 0.08})`;
+    ctx.beginPath();
+    ctx.arc(x + 116, y - 15, 13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return;
+  }
   ctx.save();
   ctx.translate(x, y);
   ctx.fillStyle = "#8a5a35";
@@ -667,7 +741,7 @@ function drawReportDesk(x, y, now) {
   ctx.fillText("안전 배치 보고판", 0, 8);
   ctx.fillStyle = "#4a6675";
   ctx.font = "800 10px system-ui";
-  ctx.fillText("자료 모은 뒤 Space", 0, 30);
+  ctx.fillText("자료 모으면 Space", 0, 30);
   ctx.fillStyle = `rgba(45,168,90,${0.35 + Math.sin(now / 300) * 0.08})`;
   ctx.beginPath();
   ctx.arc(100, -20, 13, 0, Math.PI * 2);
@@ -687,13 +761,14 @@ function drawSafetyHelper(now) {
 function drawWH() {
   const x = state.player.x * width;
   const y = state.player.y * height;
+  ctx.fillStyle = "rgba(35,65,86,.16)";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 5, 27, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (assetManager.draw(ctx, "characters.wh", { x, y: y + 8, height: 150, anchorX: 0.5, anchorY: 1 })) return;
   ctx.save();
   ctx.translate(x, y);
   ctx.scale(0.92, 0.92);
-  ctx.fillStyle = "rgba(35,65,86,.16)";
-  ctx.beginPath();
-  ctx.ellipse(0, -8, 25, 8, 0, 0, Math.PI * 2);
-  ctx.fill();
   ctx.fillStyle = "#1b8f88";
   ctx.beginPath();
   ctx.roundRect(-22, -72, 44, 54, 13);

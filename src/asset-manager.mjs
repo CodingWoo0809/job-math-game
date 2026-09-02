@@ -9,6 +9,8 @@ export const ASSET_MANIFEST = Object.freeze({
     financeManager: "./assets/characters/sprites/finance_manager.png",
     mathTeacher: "./assets/characters/sprites/math_teacher.png",
     stationeryStoreOwner: "./assets/characters/sprites/stationery_store_owner.png",
+    studentAffairsTeacher: "./assets/characters/sprites/student_affairs_teacher.png",
+    studentCouncilMember: "./assets/characters/sprites/student_council_member.png",
     operationsTechnician: "./assets/characters/sprites/operations_technician.png",
     truckDriver: "./assets/characters/sprites/truck_driver.png",
     monkey: "./assets/characters/sprites/monkey.png",
@@ -148,7 +150,11 @@ export const ASSET_MANIFEST = Object.freeze({
     cardGameTable: "./assets/props/sprites/card_game_table.png",
     coinGameTable: "./assets/props/sprites/coin_game_table.png",
     diceGameTable: "./assets/props/sprites/dice_game_table.png",
-    candyGameTable: "./assets/props/sprites/candy_game_table.png"
+    candyGameTable: "./assets/props/sprites/candy_game_table.png",
+    frontGateRecordEasel: "./assets/props/sprites/front_gate_record_easel.png",
+    backGateRecordEasel: "./assets/props/sprites/back_gate_record_easel.png",
+    safetyAssignmentReportDesk: "./assets/props/sprites/safety_assignment_report_desk.png",
+    mathNote: "./assets/props/sprites/math_note.png"
   })
 });
 

@@ -819,4 +819,20 @@ body {
 
 
 /* Asset-backed start preview. */
-.data-hero::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:url("./assets/characters/sprites/wh.png") 33% 88%/auto 138px no-repeat,url("./assets/characters/sprites/math_teacher.png") 55% 84%/auto 128px no-repeat,url("./assets/props/sprites/sales_summary_easel.png") 77% 84%/auto 124px no-repeat,url("./assets/props/sprites/bench.png") 90% 91%/auto 118px no-repeat}.data-hero .hero-caption{z-index:6}
+.data-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    url("./assets/characters/sprites/wh.png") 27% 90% / auto 138px no-repeat,
+    url("./assets/characters/sprites/student_affairs_teacher.png") 52% 86% / auto 130px no-repeat,
+    url("./assets/characters/sprites/student_council_member.png") 72% 87% / auto 122px no-repeat,
+    url("./assets/props/sprites/front_gate_record_easel.png") 38% 82% / auto 116px no-repeat,
+    url("./assets/props/sprites/back_gate_record_easel.png") 64% 82% / auto 116px no-repeat,
+    url("./assets/props/sprites/safety_assignment_report_desk.png") 53% 96% / auto 158px no-repeat,
+    url("./assets/props/sprites/math_note.png") 33% 96% / auto 74px no-repeat,
+    url("./assets/buildings/sprites/school_building.png") 50% 58% / auto 300px no-repeat;
+}
+.data-hero .hero-caption { z-index: 6; }
